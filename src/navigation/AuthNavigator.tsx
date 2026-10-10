@@ -9,7 +9,6 @@ import {
   RegisterContactScreen,
   RegisterDetailsScreen,
   RegisterNameScreen,
-  RegisterPersonalScreen,
   SignupScreen,
   SplashScreen,
   WelcomeScreen,
@@ -33,7 +32,6 @@ export const AuthNavigator = () => (
     <Stack.Screen name="RegisterName" component={RegisterNameScreen} />
     <Stack.Screen name="RegisterContact" component={RegisterContactScreen} />
     <Stack.Screen name="RegisterDetails" component={RegisterDetailsScreen} />
-    <Stack.Screen name="RegisterPersonal" component={RegisterPersonalScreen} />
     <Stack.Screen name="OTP" component={OTPScreen} />
     <Stack.Screen name="Membership" component={MembershipScreen} />
   </Stack.Navigator>

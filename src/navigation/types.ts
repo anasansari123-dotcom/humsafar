@@ -11,7 +11,6 @@ export type AuthStackParamList = {
   RegisterName: undefined;
   RegisterContact: undefined;
   RegisterDetails: undefined;
-  RegisterPersonal: undefined;
 };
 
 export type MainTabParamList = {
@@ -33,6 +32,7 @@ export type RootStackParamList = {
   Favourites: undefined;
   EditProfile: { section?: string } | undefined;
   Settings: undefined;
+  Privacy: undefined;
   HelpCenter: undefined;
   SuccessStories: undefined;
 };

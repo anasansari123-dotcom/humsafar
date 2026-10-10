@@ -38,7 +38,7 @@ export const OTPScreen: React.FC<Props> = ({ navigation, route }) => {
 
     if (mode === 'register') {
       updateRegister({ phoneVerified: true });
-      navigation.navigate('RegisterDetails');
+      navigation.navigate('RegisterContact');
       return;
     }
 

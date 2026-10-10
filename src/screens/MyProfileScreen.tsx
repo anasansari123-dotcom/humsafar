@@ -200,7 +200,7 @@ export const MyProfileScreen: React.FC = () => {
           <MenuItem
             icon={Shield}
             label="Privacy"
-            onPress={() => navigation.navigate('Settings')}
+            onPress={() => navigation.navigate('Privacy')}
             accent={theme.accent}
             text={theme.text}
           />

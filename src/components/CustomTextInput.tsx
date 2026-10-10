@@ -5,6 +5,7 @@ import {
   TextInput,
   TextInputProps,
   View,
+  ViewStyle,
 } from 'react-native';
 import { colors, fonts, radius, spacing } from '../theme';
 
@@ -13,6 +14,7 @@ interface Props extends TextInputProps {
   error?: string;
   left?: React.ReactNode;
   right?: React.ReactNode;
+  containerStyle?: ViewStyle;
 }
 
 export const CustomTextInput: React.FC<Props> = ({
@@ -21,9 +23,10 @@ export const CustomTextInput: React.FC<Props> = ({
   left,
   right,
   style,
+  containerStyle,
   ...rest
 }) => (
-  <View style={styles.wrapper}>
+  <View style={[styles.wrapper, containerStyle]}>
     {label ? <Text style={styles.label}>{label}</Text> : null}
     <View style={[styles.field, error ? styles.fieldError : null]}>
       {left}

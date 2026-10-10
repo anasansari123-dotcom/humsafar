@@ -29,7 +29,7 @@ export const SearchInput: React.FC<Props> = ({
     />
     {onFilterPress ? (
       <Pressable onPress={onFilterPress} style={styles.filter} hitSlop={8}>
-        <SlidersHorizontal size={16} color={colors.accent} />
+        <SlidersHorizontal size={18} color={colors.accent} />
       </Pressable>
     ) : null}
   </View>
@@ -41,23 +41,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderRadius: radius.xl,
-    paddingHorizontal: spacing.md,
-    height: 42,
+    paddingHorizontal: spacing.lg,
+    height: 52,
     borderWidth: 2.5,
     borderColor: colors.accent,
-    gap: 8,
+    gap: 10,
   },
   input: {
     flex: 1,
     fontFamily: fonts.regular,
-    fontSize: 14,
+    fontSize: 15,
     color: colors.text,
     paddingVertical: 0,
   },
   filter: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     backgroundColor: 'rgba(212,175,55,0.12)',
     alignItems: 'center',
     justifyContent: 'center',

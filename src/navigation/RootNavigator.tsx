@@ -13,6 +13,7 @@ import {
   MyProfileScreen,
   NotificationsScreen,
   ProfileDetailsScreen,
+  PrivacyScreen,
   SettingsScreen,
   SuccessStoriesScreen,
 } from '../screens';
@@ -70,6 +71,7 @@ export const RootNavigator = () => {
             <Stack.Screen name="Favourites" component={FavouritesScreen} />
             <Stack.Screen name="EditProfile" component={EditProfileScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name="Privacy" component={PrivacyScreen} />
             <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />
             <Stack.Screen name="SuccessStories" component={SuccessStoriesScreen} />
           </>

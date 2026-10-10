@@ -22,7 +22,6 @@ import {
   CustomTextInput,
   GoogleLogo,
   GradientHeader,
-  Ornament,
   PremiumButton,
 } from '../components';
 import { COUNTRY_CODES } from '../constants';
@@ -86,7 +85,6 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
           else navigation.navigate('Welcome');
         }}
       />
-      <Ornament size={60} opacity={0.08} />
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -95,18 +93,20 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
         <ScrollView
           contentContainerStyle={[
             styles.content,
-            { paddingBottom: insets.bottom + 40 },
+            { paddingBottom: insets.bottom + 16 },
           ]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
+          bounces={false}
         >
           <Animated.View
-            entering={FadeInDown.delay(150).duration(500)}
+            entering={FadeInDown.delay(80).duration(400)}
             style={[styles.card, shadows.card]}
           >
             <View style={styles.brandInCard}>
-              <BrandTitle size="md" />
+              <BrandTitle size="md" variant="serif" />
             </View>
+
             <Text style={styles.heading}>
               {loginMode === 'otp' ? 'OTP Login' : 'Password Login'}
             </Text>
@@ -172,7 +172,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                       placeholder="98765 43210"
                       maxLength={12}
                       error={errors.phone?.message}
-                      style={{ marginBottom: 0 }}
+                      containerStyle={styles.inputGap}
                     />
                   )}
                 />
@@ -180,7 +180,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
             </View>
 
             {loginMode === 'password' && (
-              <Animated.View entering={FadeInDown.duration(280)}>
+              <Animated.View entering={FadeInDown.duration(240)}>
                 <Controller
                   control={control}
                   name="password"
@@ -200,16 +200,17 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                       secureTextEntry={!showPassword}
                       autoCapitalize="none"
                       error={errors.password?.message}
-                      left={<Lock size={18} color={colors.textMuted} />}
+                      containerStyle={styles.inputGap}
+                      left={<Lock size={16} color={colors.textMuted} />}
                       right={
                         <Pressable
                           onPress={() => setShowPassword((v) => !v)}
                           hitSlop={10}
                         >
                           {showPassword ? (
-                            <EyeOff size={18} color={colors.textMuted} />
+                            <EyeOff size={16} color={colors.textMuted} />
                           ) : (
-                            <Eye size={18} color={colors.textMuted} />
+                            <Eye size={16} color={colors.textMuted} />
                           )}
                         </Pressable>
                       }
@@ -228,35 +229,27 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 title="Continue with OTP"
                 onPress={handleSubmit(onOtpLogin)}
                 loading={loading}
+                style={styles.goldBtn}
               />
             ) : (
-              <>
-                <PremiumButton
-                  title="Login with Password"
-                  onPress={handleSubmit(onPasswordLogin)}
-                  loading={loading}
-                  icon={<Lock size={18} color={colors.primary} />}
-                />
-                <Pressable
-                  style={styles.switchMode}
-                  onPress={() => setLoginMode('otp')}
-                >
-                  <Text style={styles.switchModeText}>
-                    Prefer OTP? Continue with OTP
-                  </Text>
-                </Pressable>
-              </>
+              <PremiumButton
+                title="Login with Password"
+                onPress={handleSubmit(onPasswordLogin)}
+                loading={loading}
+                icon={<Lock size={16} color={colors.primary} />}
+                style={styles.goldBtn}
+              />
             )}
 
             <Text style={styles.or}>or continue with</Text>
 
             <View style={styles.socialRow}>
               <Pressable style={styles.socialBtn}>
-                <GoogleLogo size={22} />
+                <GoogleLogo size={18} />
                 <Text style={styles.socialText}>Google</Text>
               </Pressable>
               <Pressable style={styles.socialBtn}>
-                <AppleLogo size={22} />
+                <AppleLogo size={18} />
                 <Text style={styles.socialText}>Apple</Text>
               </Pressable>
             </View>
@@ -304,44 +297,49 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    padding: spacing.xl,
-    paddingTop: spacing.massive + spacing.xl,
+    paddingHorizontal: spacing.xl,
+    paddingTop: 0,
+    flexGrow: 1,
   },
   brandInCard: {
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
+    marginTop: spacing.xs,
   },
   card: {
     backgroundColor: colors.surface,
     borderRadius: radius.xxl,
-    padding: spacing.xxl,
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.lg,
     borderWidth: 2.5,
     borderColor: colors.primary,
+    marginTop: spacing.sm,
   },
   heading: {
     fontFamily: fonts.semiBold,
-    fontSize: 20,
+    fontSize: 18,
     color: colors.primary,
   },
   sub: {
     fontFamily: fonts.regular,
-    fontSize: 14,
+    fontSize: 13,
     color: colors.textMuted,
-    marginBottom: spacing.lg,
-    marginTop: 4,
+    marginBottom: spacing.md,
+    marginTop: 2,
   },
   modeTabs: {
     flexDirection: 'row',
     backgroundColor: colors.background,
     borderRadius: radius.xl,
-    padding: 4,
-    marginBottom: spacing.xl,
+    padding: 3,
+    marginBottom: spacing.md,
     borderWidth: 2,
     borderColor: colors.accent,
   },
   modeTab: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 8,
     borderRadius: radius.lg,
     alignItems: 'center',
   },
@@ -358,13 +356,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: fonts.medium,
-    fontSize: 13,
+    fontSize: 12,
     color: colors.primary,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   phoneRow: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 8,
     alignItems: 'flex-start',
   },
   codeBtn: {
@@ -372,42 +370,41 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     borderWidth: 2,
     borderColor: colors.accent,
-    paddingHorizontal: 14,
+    paddingHorizontal: 12,
     justifyContent: 'center',
     backgroundColor: colors.background,
   },
   codeText: {
     fontFamily: fonts.medium,
-    fontSize: 14,
+    fontSize: 13,
     color: colors.text,
   },
-  switchMode: {
-    marginTop: spacing.lg,
-    alignItems: 'center',
-    padding: 6,
+  inputGap: {
+    marginBottom: spacing.sm,
   },
-  switchModeText: {
-    fontFamily: fonts.medium,
-    fontSize: 13,
-    color: colors.accentDark,
+  goldBtn: {
+    borderWidth: 2,
+    borderColor: colors.primary,
+    borderRadius: radius.xl,
+    overflow: 'hidden',
   },
   or: {
     textAlign: 'center',
     fontFamily: fonts.regular,
-    fontSize: 13,
+    fontSize: 12,
     color: colors.textMuted,
-    marginVertical: spacing.lg,
+    marginVertical: spacing.md,
   },
   socialRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 10,
   },
   socialBtn: {
     flex: 1,
-    height: 50,
+    height: 46,
     borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderWidth: 2,
+    borderColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -416,21 +413,21 @@ const styles = StyleSheet.create({
   },
   socialText: {
     fontFamily: fonts.medium,
-    fontSize: 14,
+    fontSize: 13,
     color: colors.primary,
   },
   help: {
-    marginTop: spacing.sm,
-    marginBottom: spacing.lg,
+    marginTop: 2,
+    marginBottom: spacing.sm,
     alignItems: 'flex-start',
   },
   helpText: {
     fontFamily: fonts.medium,
-    fontSize: 13,
+    fontSize: 12,
     color: colors.secondary,
   },
   signupLink: {
-    marginTop: spacing.xl,
+    marginTop: spacing.md,
     alignItems: 'center',
   },
   signupText: {

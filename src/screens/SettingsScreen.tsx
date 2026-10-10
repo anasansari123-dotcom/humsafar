@@ -15,7 +15,6 @@ import {
   Globe,
   LogOut,
   Moon,
-  Shield,
   Trash2,
 } from 'lucide-react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -33,7 +32,6 @@ export const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   const logout = useAuthStore((s) => s.logout);
   const colorsTheme = useThemeColors();
   const [notif, setNotif] = useState(true);
-  const [privacy, setPrivacy] = useState(true);
   const [langOpen, setLangOpen] = useState(false);
 
   const handleLogout = () => {
@@ -91,7 +89,7 @@ export const SettingsScreen: React.FC<Props> = ({ navigation }) => {
             </View>
           </Pressable>
 
-          <View style={styles.row}>
+          <View style={[styles.row, styles.rowLast]}>
             <View style={styles.left}>
               <Bell size={18} color={colors.accent} />
               <Text style={styles.label}>Notifications</Text>
@@ -99,19 +97,6 @@ export const SettingsScreen: React.FC<Props> = ({ navigation }) => {
             <Switch
               value={notif}
               onValueChange={setNotif}
-              trackColor={{ false: colors.border, true: colors.accent }}
-              thumbColor={colors.surface}
-            />
-          </View>
-
-          <View style={[styles.row, styles.rowLast]}>
-            <View style={styles.left}>
-              <Shield size={18} color={colors.accent} />
-              <Text style={styles.label}>Privacy Mode</Text>
-            </View>
-            <Switch
-              value={privacy}
-              onValueChange={setPrivacy}
               trackColor={{ false: colors.border, true: colors.accent }}
               thumbColor={colors.surface}
             />

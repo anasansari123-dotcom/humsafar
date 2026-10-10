@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Crown,
   Heart,
@@ -41,12 +42,22 @@ const TabIcon = ({
 
 export const MainTabs = () => {
   const colors = useThemeColors();
+  const insets = useSafeAreaInsets();
+  /** Sit above Android/iOS system navigation / gesture bar */
+  const bottomOffset = Math.max(insets.bottom, Platform.OS === 'android' ? 12 : 8) + 8;
 
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [
+          styles.tabBar,
+          {
+            bottom: bottomOffset,
+            height: 70,
+          },
+        ],
+        tabBarSafeAreaInsets: { bottom: 0 },
         tabBarBackground: () => (
           <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill}>
             <View
@@ -121,8 +132,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 16,
     right: 16,
-    bottom: 16,
-    height: 70,
     borderRadius: 24,
     borderTopWidth: 0,
     backgroundColor: 'transparent',

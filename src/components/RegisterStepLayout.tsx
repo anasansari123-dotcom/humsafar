@@ -23,7 +23,7 @@ interface Props {
 
 export const RegisterStepLayout: React.FC<Props> = ({
   step,
-  total = 4,
+  total = 3,
   title,
   subtitle,
   onBack,

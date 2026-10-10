@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Alert, FlatList, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { MessageCircle, Phone } from 'lucide-react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Avatar, GradientHeader, PremiumButton } from '../components';
+import { Avatar, GradientHeader } from '../components';
 import { conversations, interests } from '../data/chats';
 import { useAppStore } from '../store/useAppStore';
 import { isPremiumTier } from '../utils';
@@ -15,6 +17,7 @@ import { colors, fonts, radius, spacing } from '../theme';
 const tabs = ['received', 'sent', 'accepted'] as const;
 
 export const InterestScreen: React.FC = () => {
+  const insets = useSafeAreaInsets();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const membership = useAppStore((s) => s.membership);
@@ -80,7 +83,10 @@ export const InterestScreen: React.FC = () => {
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[
+          styles.list,
+          { paddingBottom: insets.bottom + 110 },
+        ]}
         ListEmptyComponent={
           <Text style={styles.empty}>No {tab} interests yet.</Text>
         }
@@ -97,7 +103,7 @@ export const InterestScreen: React.FC = () => {
               <Avatar
                 uri={item.profile.images[0]}
                 size={58}
-                goldRing={item.profile.isPremium}
+                goldRing
               />
               <View style={styles.info}>
                 <Text style={styles.name}>
@@ -118,36 +124,57 @@ export const InterestScreen: React.FC = () => {
 
             {tab === 'received' && (
               <View style={styles.actions}>
-                <PremiumButton title="Accept" style={styles.btn} />
-                <PremiumButton title="Decline" variant="outline" style={styles.btn} />
-                <PremiumButton
-                  title="Contact"
-                  variant="primary"
-                  style={styles.btn}
-                  icon={<MessageCircle size={16} color={colors.surface} />}
+                <Pressable style={[styles.actionBtn, styles.acceptBtn]}>
+                  <LinearGradient
+                    colors={[...colors.gradientGold]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.actionFill}
+                  >
+                    <Text style={styles.acceptText}>Accept</Text>
+                  </LinearGradient>
+                </Pressable>
+
+                <Pressable style={[styles.actionBtn, styles.declineBtn]}>
+                  <Text style={styles.declineText}>Decline</Text>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.actionBtn, styles.contactBtn]}
                   onPress={() => openContact(item.profile)}
-                />
+                >
+                  <MessageCircle size={14} color={colors.surface} />
+                  <Text style={styles.contactText}>Contact</Text>
+                </Pressable>
               </View>
             )}
 
             {(tab === 'accepted' || tab === 'sent') && (
               <View style={styles.actions}>
-                <PremiumButton
-                  title="Contact"
-                  style={styles.fullBtn}
-                  icon={<Phone size={16} color={colors.primary} />}
+                <Pressable
+                  style={[styles.actionBtn, styles.acceptBtn, styles.fullBtn]}
                   onPress={() => openContact(item.profile)}
-                />
-                <PremiumButton
-                  title="View Profile"
-                  variant="outline"
-                  style={styles.fullBtn}
+                >
+                  <LinearGradient
+                    colors={[...colors.gradientGold]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.actionFill}
+                  >
+                    <Phone size={14} color={colors.primary} />
+                    <Text style={styles.acceptText}>Contact</Text>
+                  </LinearGradient>
+                </Pressable>
+                <Pressable
+                  style={[styles.actionBtn, styles.declineBtn, styles.fullBtn]}
                   onPress={() =>
                     navigation.navigate('ProfileDetails', {
                       profileId: item.profile.id,
                     })
                   }
-                />
+                >
+                  <Text style={styles.declineText}>View Profile</Text>
+                </Pressable>
               </View>
             )}
           </Animated.View>
@@ -190,7 +217,6 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: spacing.xl,
-    paddingBottom: 100,
   },
   card: {
     backgroundColor: colors.surface,
@@ -234,9 +260,52 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 14,
   },
-  btn: {
+  actionBtn: {
     flex: 1,
-    paddingHorizontal: 8,
+    height: 42,
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+    borderWidth: 2,
+  },
+  actionFill: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  acceptBtn: {
+    borderColor: colors.primary,
+  },
+  declineBtn: {
+    borderColor: colors.accent,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contactBtn: {
+    borderColor: colors.accent,
+    backgroundColor: colors.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    paddingHorizontal: 4,
+  },
+  acceptText: {
+    fontFamily: fonts.semiBold,
+    fontSize: 12,
+    color: colors.primary,
+  },
+  declineText: {
+    fontFamily: fonts.semiBold,
+    fontSize: 12,
+    color: colors.primary,
+  },
+  contactText: {
+    fontFamily: fonts.semiBold,
+    fontSize: 12,
+    color: colors.surface,
   },
   fullBtn: {
     flex: 1,

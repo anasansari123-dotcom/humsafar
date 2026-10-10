@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
+  Dimensions,
   FlatList,
   Image,
   Pressable,
@@ -9,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Bell, Menu } from 'lucide-react-native';
+import { Bell, Menu, Moon, Sun } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -35,6 +36,13 @@ type HomeNav = CompositeNavigationProp<
   NativeStackNavigationProp<RootStackParamList>
 >;
 
+const SCREEN_W = Dimensions.get('window').width;
+const HOME_LIST_PAD = spacing.xl;
+const HOME_CARD_GAP = 12;
+/** Match Matches-page card size (48% width, aspect ratio 0.78) */
+const HOME_CARD_W = (SCREEN_W - HOME_LIST_PAD * 2) * 0.48;
+const HOME_CARD_H = HOME_CARD_W / 0.78;
+
 export const HomeScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<HomeNav>();
@@ -47,8 +55,18 @@ export const HomeScreen: React.FC = () => {
     toggleFavourite,
     addViewedProfile,
     setShowPremiumPopup,
+    darkMode,
+    toggleDarkMode,
   } = useAppStore();
   const [query, setQuery] = useState('');
+  const homeCardStyle = useMemo(
+    () => ({
+      width: HOME_CARD_W,
+      height: HOME_CARD_H,
+      marginRight: HOME_CARD_GAP,
+    }),
+    [],
+  );
 
   const recommended = useMemo(() => profiles.slice(0, 6), []);
   const newMembers = useMemo(() => profiles.slice(2, 8), []);
@@ -101,18 +119,34 @@ export const HomeScreen: React.FC = () => {
             </Pressable>
           </View>
 
-          <Pressable
-            style={styles.bell}
-            onPress={() => navigation.navigate('Notifications')}
-          >
-            <Bell size={20} color={colors.accent} />
-            <View style={styles.dot} />
-          </Pressable>
+          <View style={styles.rightActions}>
+            <Pressable
+              style={styles.iconBtn}
+              onPress={() => navigation.navigate('Notifications')}
+              accessibilityLabel="Notifications"
+            >
+              <Bell size={18} color={colors.accent} />
+              <View style={styles.dot} />
+            </Pressable>
+            <Pressable
+              style={styles.iconBtn}
+              onPress={toggleDarkMode}
+              accessibilityLabel={
+                darkMode ? 'Switch to purple theme' : 'Switch to green theme'
+              }
+            >
+              {darkMode ? (
+                <Sun size={17} color={colors.accent} />
+              ) : (
+                <Moon size={17} color={colors.accent} />
+              )}
+            </Pressable>
+          </View>
         </View>
         <SearchInput
           value={query}
           onChangeText={setQuery}
-          placeholder="Search by name, city, profession…"
+          placeholder="Search name, city, profession"
           onFilterPress={() => navigation.navigate('Matches')}
           style={styles.search}
         />
@@ -139,7 +173,7 @@ export const HomeScreen: React.FC = () => {
               onPress={() => openProfile(item.id)}
               onFavourite={() => toggleFavourite(item.id)}
               isFavourite={favouriteIds.includes(item.id)}
-              style={{ marginRight: 14 }}
+              style={homeCardStyle}
             />
           )}
         />
@@ -154,7 +188,7 @@ export const HomeScreen: React.FC = () => {
             <ProfileCard
               profile={item}
               onPress={() => openProfile(item.id)}
-              style={{ marginRight: 14 }}
+              style={homeCardStyle}
             />
           )}
         />
@@ -170,7 +204,7 @@ export const HomeScreen: React.FC = () => {
             <ProfileCard
               profile={item}
               onPress={() => openProfile(item.id)}
-              style={{ marginRight: 14 }}
+              style={homeCardStyle}
             />
           )}
         />
@@ -186,7 +220,7 @@ export const HomeScreen: React.FC = () => {
             <ProfileCard
               profile={item}
               onPress={() => openProfile(item.id)}
-              style={{ marginRight: 14 }}
+              style={homeCardStyle}
             />
           )}
         />
@@ -202,7 +236,7 @@ export const HomeScreen: React.FC = () => {
             <ProfileCard
               profile={item}
               onPress={() => openProfile(item.id)}
-              style={{ marginRight: 14 }}
+              style={homeCardStyle}
             />
           )}
         />
@@ -248,23 +282,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 10,
-    paddingHorizontal: 0,
+    gap: 12,
+    paddingHorizontal: spacing.lg,
+    minHeight: 46,
   },
   leftHeader: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    minWidth: 0,
   },
   menuBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 42,
+    height: 42,
+    borderRadius: 12,
     backgroundColor: 'rgba(212,175,55,0.14)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: colors.accent,
   },
   greetRow: {
@@ -272,43 +308,49 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    minWidth: 0,
   },
   greetText: {
     flex: 1,
-    paddingRight: 4,
+    minWidth: 0,
   },
   greeting: {
     fontFamily: fonts.regular,
-    fontSize: 12,
+    fontSize: 11,
     color: 'rgba(255,255,255,0.7)',
   },
   userName: {
     fontFamily: fonts.semiBold,
-    fontSize: 15,
+    fontSize: 14,
     color: colors.surface,
   },
-  bell: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  rightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  iconBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: 'rgba(212,175,55,0.12)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: colors.accent,
   },
   dot: {
     position: 'absolute',
-    top: 10,
-    right: 12,
-    width: 8,
-    height: 8,
+    top: 8,
+    right: 9,
+    width: 7,
+    height: 7,
     borderRadius: 4,
     backgroundColor: colors.accent,
   },
   search: {
-    marginTop: spacing.xxl + spacing.sm,
-    marginHorizontal: spacing.xl,
+    marginTop: spacing.lg,
+    marginHorizontal: spacing.lg,
   },
   hList: {
     paddingHorizontal: spacing.xl,

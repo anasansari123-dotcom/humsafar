@@ -87,9 +87,9 @@ export const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
             onPress={() => setLangOpen(true)}
             hitSlop={8}
           >
-            <Globe size={16} color={colors.accent} />
+            <Globe size={12} color={colors.accent} />
             <Text style={styles.langText}>{activeLang}</Text>
-            <ChevronDown size={16} color={colors.accent} />
+            <ChevronDown size={12} color={colors.accent} />
           </Pressable>
         </View>
 
@@ -218,17 +218,17 @@ const styles = StyleSheet.create({
   langBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     borderRadius: radius.full,
     backgroundColor: 'rgba(45,11,89,0.45)',
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: colors.accent,
   },
   langText: {
     fontFamily: fonts.semiBold,
-    fontSize: 14,
+    fontSize: 11,
     color: colors.accentLight,
   },
   center: {
@@ -270,6 +270,8 @@ const styles = StyleSheet.create({
   registerBtn: {
     borderRadius: radius.full,
     overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: colors.primary,
   },
   registerGradient: {
     height: 54,

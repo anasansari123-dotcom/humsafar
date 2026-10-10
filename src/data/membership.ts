@@ -54,7 +54,7 @@ export const membershipPlans: MembershipPlan[] = [
     price: 3999,
     period: '/ month',
     tagline: 'Ultimate luxury matchmaking',
-    color: '#7B5CFF',
+    color: '#E5E4E2',
     features: [
       'Everything in Gold',
       'Video call access',
