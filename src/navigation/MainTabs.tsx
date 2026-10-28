@@ -1,11 +1,10 @@
 import React from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Crown,
   Heart,
-  Home,
   MessageCircle,
   Users,
 } from 'lucide-react-native';
@@ -19,8 +18,13 @@ import {
   SearchScreen,
 } from '../screens';
 import { fonts, useThemeColors } from '../theme';
+import { TAB_BAR_CONTENT_HEIGHT, getTabBarBottom } from '../constants';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
+
+const humsafarHLogo = require('../../assets/humsafar-h-logo.png');
+
+export { TAB_BAR_CONTENT_HEIGHT };
 
 const TabIcon = ({
   Icon,
@@ -40,11 +44,19 @@ const TabIcon = ({
   </View>
 );
 
+const HomeLogoIcon = ({ focused }: { focused: boolean }) => (
+  <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+    <Image
+      source={humsafarHLogo}
+      style={[styles.homeLogo, !focused && styles.homeLogoDim]}
+      resizeMode="contain"
+    />
+  </View>
+);
+
 export const MainTabs = () => {
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
-  /** Sit above Android/iOS system navigation / gesture bar */
-  const bottomOffset = Math.max(insets.bottom, Platform.OS === 'android' ? 12 : 8) + 8;
 
   return (
     <Tab.Navigator
@@ -53,36 +65,36 @@ export const MainTabs = () => {
         tabBarStyle: [
           styles.tabBar,
           {
-            bottom: bottomOffset,
-            height: 70,
+            bottom: getTabBarBottom(insets.bottom),
+            height: TAB_BAR_CONTENT_HEIGHT,
           },
         ],
-        tabBarSafeAreaInsets: { bottom: 0 },
         tabBarBackground: () => (
-          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill}>
-            <View
-              style={[
-                styles.tabBg,
-                {
-                  backgroundColor: colors.tabBarBg,
-                  borderColor: colors.accent,
-                },
-              ]}
-            />
-          </BlurView>
+          <View style={StyleSheet.absoluteFill} pointerEvents="none">
+            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill}>
+              <View
+                style={[
+                  styles.tabBg,
+                  {
+                    backgroundColor: colors.tabBarBg,
+                    borderColor: colors.accent,
+                  },
+                ]}
+              />
+            </BlurView>
+          </View>
         ),
         tabBarActiveTintColor: colors.accent,
         tabBarInactiveTintColor: 'rgba(255,255,255,0.55)',
         tabBarLabelStyle: styles.label,
+        tabBarItemStyle: styles.tabItem,
       }}
     >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon Icon={Home} focused={focused} accent={colors.accent} />
-          ),
+          tabBarIcon: ({ focused }) => <HomeLogoIcon focused={focused} />,
         }}
       />
       <Tab.Screen
@@ -135,9 +147,10 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     borderTopWidth: 0,
     backgroundColor: 'transparent',
-    elevation: 0,
-    paddingBottom: 8,
-    paddingTop: 8,
+    elevation: 12,
+    zIndex: 100,
+    paddingBottom: 6,
+    paddingTop: 6,
   },
   tabBg: {
     position: 'absolute',
@@ -147,6 +160,9 @@ const styles = StyleSheet.create({
     left: 0,
     borderRadius: 24,
     borderWidth: 2.5,
+  },
+  tabItem: {
+    paddingVertical: 2,
   },
   label: {
     fontFamily: fonts.medium,
@@ -160,5 +176,12 @@ const styles = StyleSheet.create({
   },
   iconWrapActive: {
     transform: [{ scale: 1.05 }],
+  },
+  homeLogo: {
+    width: 28,
+    height: 28,
+  },
+  homeLogoDim: {
+    opacity: 0.55,
   },
 });

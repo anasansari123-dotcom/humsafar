@@ -71,7 +71,7 @@ export const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
           style={StyleSheet.absoluteFill}
         />
 
-        <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
+        <View style={[styles.topBar, { paddingTop: insets.top + 10 }]}>
           <Pressable
             style={styles.iconBtn}
             onPress={() => {
@@ -87,9 +87,9 @@ export const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
             onPress={() => setLangOpen(true)}
             hitSlop={8}
           >
-            <Globe size={12} color={colors.accent} />
+            <Globe size={13} color={colors.accent} />
             <Text style={styles.langText}>{activeLang}</Text>
-            <ChevronDown size={12} color={colors.accent} />
+            <ChevronDown size={13} color={colors.accent} />
           </Pressable>
         </View>
 
@@ -105,8 +105,8 @@ export const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
             style={styles.slider}
             renderItem={({ item }) => (
               <View style={[styles.slide, { width }]}>
-                <Text style={styles.line1}>{item.line1}</Text>
-                <Text style={styles.line2}>{item.line2}</Text>
+                <Text style={styles.headline}>{item.line1}</Text>
+                <Text style={styles.headline}>{item.line2}</Text>
               </View>
             )}
           />
@@ -127,7 +127,7 @@ export const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
               style={styles.registerGradient}
             >
               <Text style={styles.registerText}>
-                {activeLang === 'Hindi' ? 'मुफ़्त रजिस्टर करें' : 'Register Free'}
+                {activeLang === 'Hindi' ? 'मुफ़्त रजिस्टर करें' : 'Free Register'}
               </Text>
             </LinearGradient>
           </Pressable>
@@ -206,6 +206,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: spacing.xl,
+    zIndex: 10,
   },
   iconBtn: {
     width: 42,
@@ -218,23 +219,23 @@ const styles = StyleSheet.create({
   langBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    gap: 5,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: radius.full,
-    backgroundColor: 'rgba(45,11,89,0.45)',
-    borderWidth: 1,
+    backgroundColor: 'rgba(45,11,89,0.55)',
+    borderWidth: 1.5,
     borderColor: colors.accent,
   },
   langText: {
     fontFamily: fonts.semiBold,
-    fontSize: 11,
+    fontSize: 12,
     color: colors.accentLight,
   },
   center: {
     flex: 1,
     justifyContent: 'center',
-    paddingTop: 72,
+    paddingTop: 40,
   },
   slider: {
     flexGrow: 0,
@@ -244,22 +245,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: spacing.xxxl,
   },
-  line1: {
+  /** Both headline lines share one gold script style */
+  headline: {
     fontFamily: fonts.script,
-    fontSize: 42,
-    color: '#F0D78C',
-    textAlign: 'center',
-    textShadowColor: 'rgba(0,0,0,0.35)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
-  },
-  line2: {
-    fontFamily: fonts.script,
-    fontSize: 46,
+    fontSize: 48,
+    lineHeight: 64,
     color: '#E8C96A',
     textAlign: 'center',
-    marginTop: -4,
-    textShadowColor: 'rgba(0,0,0,0.4)',
+    textShadowColor: 'rgba(0,0,0,0.45)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 10,
   },
@@ -280,9 +273,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   registerText: {
-    fontFamily: fonts.semiBold,
+    fontFamily: fonts.bold,
     fontSize: 16,
     color: colors.primary,
+    letterSpacing: 0.6,
   },
   loginBtn: {
     height: 54,

@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Alert,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { Mail, Phone } from 'lucide-react-native';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Check, Mail, Phone, Users } from 'lucide-react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../navigation/types';
 import {
@@ -21,6 +15,7 @@ import { useRegisterStore } from '../store/useRegisterStore';
 import { useProfileStore } from '../store/useProfileStore';
 import { useAppStore } from '../store/useAppStore';
 import { MaritalStatus } from '../types';
+import { generateAccountId } from '../utils';
 import { colors, fonts, radius, spacing } from '../theme';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'RegisterContact'>;
@@ -36,10 +31,16 @@ export const RegisterContactScreen: React.FC<Props> = ({ navigation }) => {
 
   const [mail, setMail] = useState(draft.email);
   const [mobile, setMobile] = useState(draft.phone);
+  const [parentMobile, setParentMobile] = useState(draft.parentPhone);
   const [showCodes, setShowCodes] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
-  const finishProfile = async (email: string, phone: string) => {
+  const finishProfile = async (
+    email: string,
+    phone: string,
+    parentPhone: string,
+  ) => {
     setLoading(true);
 
     const birth = new Date(
@@ -54,8 +55,11 @@ export const RegisterContactScreen: React.FC<Props> = ({ navigation }) => {
     if (age <= 0 || age >= 100) age = 25;
 
     const name = `${draft.firstName} ${draft.lastName}`.trim();
+    const accountId = generateAccountId();
 
     updateProfile({
+      id: accountId,
+      accountId,
       name,
       age,
       gender: (draft.gender || 'Male') as 'Male' | 'Female',
@@ -63,14 +67,16 @@ export const RegisterContactScreen: React.FC<Props> = ({ navigation }) => {
       city: draft.city,
       state: draft.state,
       education: draft.education,
+      profession: draft.profession || 'Other',
       caste: draft.caste,
+      parentPhone,
       maritalStatus: (draft.maritalStatus || 'Never Married') as MaritalStatus,
-      profileCompletion: email || phone ? 80 : 70,
+      profileCompletion: 85,
       isPremium: false,
       membership: 'FREE',
     });
 
-    if (phone) setPhone(phone);
+    setPhone(phone);
 
     await new Promise((r) => setTimeout(r, 400));
     draft.reset();
@@ -82,16 +88,33 @@ export const RegisterContactScreen: React.FC<Props> = ({ navigation }) => {
 
   const onCreate = async () => {
     const email = mail.trim();
-    const phone = mobile.trim();
+    const phone = mobile.trim().replace(/\s/g, '');
+    const parentPhone = parentMobile.trim().replace(/\s/g, '');
 
     if (email && !/\S+@\S+\.\S+/.test(email)) {
       Alert.alert('Invalid email', 'Please enter a valid email or leave it empty');
       return;
     }
-    if (phone && phone.length < 10) {
+    if (!phone) {
+      Alert.alert('Required', 'Please enter your mobile number');
+      return;
+    }
+    if (phone.length < 10) {
+      Alert.alert('Invalid mobile', 'Please enter a valid 10-digit number');
+      return;
+    }
+    if (!parentPhone) {
+      Alert.alert('Required', "Please enter your parent's mobile number");
+      return;
+    }
+    if (parentPhone.length < 10) {
+      Alert.alert('Invalid parent number', 'Please enter a valid 10-digit number');
+      return;
+    }
+    if (!agreed) {
       Alert.alert(
-        'Invalid mobile',
-        'Please enter a valid 10-digit number or leave it empty',
+        'Terms & Conditions',
+        'Please accept the Terms & Conditions to create your account',
       );
       return;
     }
@@ -99,39 +122,45 @@ export const RegisterContactScreen: React.FC<Props> = ({ navigation }) => {
     draft.update({
       email,
       phone,
+      parentPhone,
       phoneVerified: false,
     });
-    await finishProfile(email, phone);
+    await finishProfile(email, phone, parentPhone);
   };
 
   return (
     <RegisterStepLayout
-      step={3}
-      total={3}
-      title="Contact (Optional)"
-      subtitle="You can skip and add later"
+      step={4}
+      total={4}
+      title="Contact Details"
+      subtitle="Mobile & parent number required · Email optional"
       onBack={() => navigation.goBack()}
       footer={
-        <View style={styles.footerBtns}>
+        <>
+          <Pressable
+            style={styles.termsRow}
+            onPress={() => setAgreed((v) => !v)}
+            hitSlop={6}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: agreed }}
+          >
+            <View style={[styles.checkbox, agreed && styles.checkboxOn]}>
+              {agreed && <Check size={13} color={colors.accent} strokeWidth={3} />}
+            </View>
+            <Text style={styles.termsText}>
+              I agree to the{' '}
+              <Text style={styles.termsLink}>Terms & Conditions</Text> and{' '}
+              <Text style={styles.termsLink}>Privacy Policy</Text> of HUMSAFAR
+            </Text>
+          </Pressable>
           <PremiumButton
             title="Create Profile"
             onPress={onCreate}
             loading={loading}
           />
-          <Pressable
-            style={styles.skip}
-            onPress={() => finishProfile('', '')}
-            disabled={loading}
-          >
-            <Text style={styles.skipText}>Skip for now</Text>
-          </Pressable>
-        </View>
+        </>
       }
     >
-      <Text style={styles.hint}>
-        Email and mobile are optional. Add them now or skip to finish registration.
-      </Text>
-
       <CustomTextInput
         label="Email (optional)"
         value={mail}
@@ -142,7 +171,7 @@ export const RegisterContactScreen: React.FC<Props> = ({ navigation }) => {
         left={<Mail size={18} color={colors.textMuted} />}
       />
 
-      <Text style={styles.label}>Mobile Number (optional)</Text>
+      <Text style={styles.label}>Mobile Number</Text>
       <View style={styles.phoneRow}>
         <Pressable style={styles.codeBtn} onPress={() => setShowCodes(true)}>
           <Text style={styles.codeText}>
@@ -161,6 +190,16 @@ export const RegisterContactScreen: React.FC<Props> = ({ navigation }) => {
           />
         </View>
       </View>
+
+      <CustomTextInput
+        label="Parent's Mobile Number"
+        value={parentMobile}
+        onChangeText={setParentMobile}
+        placeholder="Father / Mother mobile number"
+        keyboardType="phone-pad"
+        maxLength={12}
+        left={<Users size={18} color={colors.textMuted} />}
+      />
 
       <BottomSheet
         visible={showCodes}
@@ -187,12 +226,35 @@ export const RegisterContactScreen: React.FC<Props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  hint: {
+  termsRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+    marginBottom: spacing.md,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 1,
+  },
+  checkboxOn: {
+    backgroundColor: colors.primary,
+  },
+  termsText: {
+    flex: 1,
     fontFamily: fonts.regular,
-    fontSize: 13,
-    color: colors.textMuted,
-    lineHeight: 20,
-    marginBottom: spacing.lg,
+    fontSize: 12.5,
+    lineHeight: 19,
+    color: colors.textSecondary,
+  },
+  termsLink: {
+    fontFamily: fonts.semiBold,
+    color: colors.primary,
   },
   label: {
     fontFamily: fonts.medium,
@@ -218,18 +280,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     fontSize: 14,
     color: colors.text,
-  },
-  footerBtns: {
-    gap: 4,
-  },
-  skip: {
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  skipText: {
-    fontFamily: fonts.medium,
-    fontSize: 14,
-    color: colors.accentDark,
   },
   codeItem: {
     paddingVertical: 14,

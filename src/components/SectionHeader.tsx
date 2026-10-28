@@ -31,7 +31,7 @@ export const SectionHeader: React.FC<Props> = ({
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: spacing.md,
     paddingHorizontal: spacing.xl,

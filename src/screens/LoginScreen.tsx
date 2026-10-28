@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -18,7 +19,6 @@ import { AuthStackParamList } from '../navigation/types';
 import {
   AppleLogo,
   BottomSheet,
-  BrandTitle,
   CustomTextInput,
   GoogleLogo,
   GradientHeader,
@@ -104,7 +104,11 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
             style={[styles.card, shadows.card]}
           >
             <View style={styles.brandInCard}>
-              <BrandTitle size="md" variant="serif" />
+              <Image
+                source={require('../../assets/humsafar-wordmark.png')}
+                style={styles.wordmark}
+                resizeMode="contain"
+              />
             </View>
 
             <Text style={styles.heading}>
@@ -150,7 +154,13 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
             <Text style={styles.label}>Mobile Number</Text>
             <View style={styles.phoneRow}>
-              <Pressable style={styles.codeBtn} onPress={() => setShowCodes(true)}>
+              <Pressable
+                style={[
+                  styles.codeBtn,
+                  loginMode === 'password' && styles.codeBtnCompact,
+                ]}
+                onPress={() => setShowCodes(true)}
+              >
                 <Text style={styles.codeText}>
                   {COUNTRY_CODES.find((c) => c.code === countryCode)?.flag}{' '}
                   {countryCode}
@@ -173,6 +183,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                       maxLength={12}
                       error={errors.phone?.message}
                       containerStyle={styles.inputGap}
+                      compact={loginMode === 'password'}
                     />
                   )}
                 />
@@ -201,16 +212,17 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                       autoCapitalize="none"
                       error={errors.password?.message}
                       containerStyle={styles.inputGap}
-                      left={<Lock size={16} color={colors.textMuted} />}
+                      compact
+                      left={<Lock size={15} color={colors.textMuted} />}
                       right={
                         <Pressable
                           onPress={() => setShowPassword((v) => !v)}
                           hitSlop={10}
                         >
                           {showPassword ? (
-                            <EyeOff size={16} color={colors.textMuted} />
+                            <EyeOff size={15} color={colors.textMuted} />
                           ) : (
-                            <Eye size={16} color={colors.textMuted} />
+                            <Eye size={15} color={colors.textMuted} />
                           )}
                         </Pressable>
                       }
@@ -221,7 +233,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
             )}
 
             <Pressable style={styles.help}>
-              <Text style={styles.helpText}>Forgot login? Get Help</Text>
+              <Text style={styles.forgotText}>Forgot login? Get Help</Text>
             </Pressable>
 
             {loginMode === 'otp' ? (
@@ -236,8 +248,9 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 title="Login with Password"
                 onPress={handleSubmit(onPasswordLogin)}
                 loading={loading}
-                icon={<Lock size={16} color={colors.primary} />}
+                icon={<Lock size={15} color={colors.primary} />}
                 style={styles.goldBtn}
+                compact
               />
             )}
 
@@ -249,7 +262,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 <Text style={styles.socialText}>Google</Text>
               </Pressable>
               <Pressable style={styles.socialBtn}>
-                <AppleLogo size={18} />
+                <AppleLogo size={18} color={colors.error} />
                 <Text style={styles.socialText}>Apple</Text>
               </Pressable>
             </View>
@@ -260,7 +273,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
             >
               <Text style={styles.helpText}>
                 New to HUMSAFAR?{' '}
-                <Text style={styles.signupText}>Register Free</Text>
+                <Text style={styles.signupText}>Free Register</Text>
               </Text>
             </Pressable>
           </Animated.View>
@@ -303,8 +316,13 @@ const styles = StyleSheet.create({
   },
   brandInCard: {
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: spacing.md,
     marginTop: spacing.xs,
+  },
+  wordmark: {
+    width: 240,
+    height: 72,
   },
   card: {
     backgroundColor: colors.surface,
@@ -374,6 +392,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.background,
   },
+  codeBtnCompact: {
+    height: 42,
+    borderRadius: radius.lg,
+    paddingHorizontal: 10,
+  },
   codeText: {
     fontFamily: fonts.medium,
     fontSize: 13,
@@ -420,6 +443,11 @@ const styles = StyleSheet.create({
     marginTop: 2,
     marginBottom: spacing.sm,
     alignItems: 'flex-start',
+  },
+  forgotText: {
+    fontFamily: fonts.semiBold,
+    fontSize: 13,
+    color: colors.error,
   },
   helpText: {
     fontFamily: fonts.medium,

@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  FlatList,
+  LayoutChangeEvent,
+  PanResponder,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -8,14 +9,14 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { SlidersHorizontal, X } from 'lucide-react-native';
+import { X } from 'lucide-react-native';
 import {
   CustomTextInput,
   GradientHeader,
+  MATCH_FRAME_RATIO,
+  MatchFrameCard,
+  PhotoGalleryModal,
   PremiumButton,
-  ProfileCard,
 } from '../components';
 import { useAppStore } from '../store/useAppStore';
 import { profiles } from '../data/profiles';
@@ -28,8 +29,7 @@ import {
   SECT_OPTIONS,
 } from '../constants';
 import { canViewProfile } from '../utils';
-import { RootStackParamList } from '../navigation/types';
-import { colors, fonts, radius, spacing } from '../theme';
+import { colors, fonts, radius, spacing, useThemeColors } from '../theme';
 
 const Chip = ({
   label,
@@ -52,8 +52,7 @@ const Chip = ({
 
 export const SearchScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const theme = useThemeColors();
   const {
     filters,
     setFilters,
@@ -62,10 +61,11 @@ export const SearchScreen: React.FC = () => {
     viewedProfileIds,
     addViewedProfile,
     setShowPremiumPopup,
-    favouriteIds,
-    toggleFavourite,
   } = useAppStore();
   const [showFilters, setShowFilters] = useState(false);
+  const [showGallery, setShowGallery] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [stage, setStage] = useState({ width: 0, height: 0 });
 
   const results = useMemo(() => {
     return profiles.filter((p) => {
@@ -96,227 +96,274 @@ export const SearchScreen: React.FC = () => {
     });
   }, [filters]);
 
-  const openProfile = (id: string) => {
+  useEffect(() => {
+    setIndex(0);
+    setShowGallery(false);
+  }, [results]);
+
+  const current = results[index];
+  const isFree = membership === 'FREE';
+
+  /** Height fills screen; width slightly under aspect so sides have a slim gap */
+  const cardWidth = useMemo(() => {
+    if (!stage.height) return 0;
+    return stage.height * MATCH_FRAME_RATIO * 0.80;
+  }, [stage.height]);
+
+  const onStageLayout = (e: LayoutChangeEvent) => {
+    const { width, height } = e.nativeEvent.layout;
+    setStage({ width, height });
+  };
+
+  const goNext = useCallback(() => {
+    setShowGallery(false);
+    setIndex((i) => (results.length ? (i + 1) % results.length : 0));
+  }, [results.length]);
+
+  const goPrev = useCallback(() => {
+    setShowGallery(false);
+    setIndex((i) =>
+      results.length ? (i - 1 + results.length) % results.length : 0,
+    );
+  }, [results.length]);
+
+  const goNextRef = useRef(goNext);
+  const goPrevRef = useRef(goPrev);
+  goNextRef.current = goNext;
+  goPrevRef.current = goPrev;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, g) =>
+        Math.abs(g.dx) > 18 && Math.abs(g.dx) > Math.abs(g.dy),
+      onPanResponderRelease: (_, g) => {
+        if (g.dx < -40) goNextRef.current();
+        else if (g.dx > 40) goPrevRef.current();
+      },
+    }),
+  ).current;
+
+  const openPhotos = (id: string) => {
     const alreadyViewed = viewedProfileIds.includes(id);
     if (!alreadyViewed && !canViewProfile(membership, viewedProfileIds.length)) {
       setShowPremiumPopup(true);
       return;
     }
     if (!alreadyViewed) addViewedProfile(id);
-    navigation.navigate('ProfileDetails', { profileId: id });
+    setShowGallery(true);
   };
 
   return (
-    <View style={styles.container}>
-      <GradientHeader
-        title="Matches"
-        subtitle={`${results.length} profiles for you`}
-        right={
-          <Pressable
-            style={styles.filterBtn}
-            onPress={() => setShowFilters((v) => !v)}
-            hitSlop={8}
-          >
-            {showFilters ? (
-              <X size={20} color={colors.accent} />
-            ) : (
-              <SlidersHorizontal size={20} color={colors.accent} />
-            )}
-          </Pressable>
-        }
-      />
-
+    <View style={[styles.container, { backgroundColor: theme.primaryDark }]}>
       {showFilters ? (
-        <ScrollView
-          contentContainerStyle={[
-            styles.content,
-            { paddingBottom: insets.bottom + 100 },
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          <Text style={styles.section}>Age Range</Text>
-          <View style={styles.row}>
-            <View style={{ flex: 1 }}>
-              <CustomTextInput
-                label="Min"
-                keyboardType="number-pad"
-                value={String(filters.ageMin)}
-                onChangeText={(t) => setFilters({ ageMin: Number(t) || 18 })}
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <CustomTextInput
-                label="Max"
-                keyboardType="number-pad"
-                value={String(filters.ageMax)}
-                onChangeText={(t) => setFilters({ ageMax: Number(t) || 50 })}
-              />
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <View style={{ flex: 1 }}>
-              <CustomTextInput
-                label="Height Min"
-                value={filters.heightMin}
-                onChangeText={(t) => setFilters({ heightMin: t })}
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <CustomTextInput
-                label="Height Max"
-                value={filters.heightMax}
-                onChangeText={(t) => setFilters({ heightMax: t })}
-              />
-            </View>
-          </View>
-
-          <CustomTextInput
-            label="City"
-            value={filters.city}
-            onChangeText={(t) => setFilters({ city: t })}
-            placeholder="Mumbai"
+        <>
+          <GradientHeader
+            title="Filters"
+            subtitle="Refine your matches"
+            onBack={() => setShowFilters(false)}
+            right={
+              <Pressable
+                style={styles.filterBtn}
+                onPress={() => setShowFilters(false)}
+                hitSlop={8}
+              >
+                <X size={20} color={colors.accent} />
+              </Pressable>
+            }
           />
-          <CustomTextInput
-            label="State"
-            value={filters.state}
-            onChangeText={(t) => setFilters({ state: t })}
-            placeholder="Maharashtra"
-          />
-          <CustomTextInput
-            label="Country"
-            value={filters.country}
-            onChangeText={(t) => setFilters({ country: t })}
-            placeholder="India"
-          />
+          <ScrollView
+            contentContainerStyle={[
+              styles.content,
+              { paddingBottom: insets.bottom + 100 },
+            ]}
+            showsVerticalScrollIndicator={false}
+          >
+            <Text style={styles.section}>Age Range</Text>
+            <View style={styles.row}>
+              <View style={{ flex: 1 }}>
+                <CustomTextInput
+                  label="Min"
+                  keyboardType="number-pad"
+                  value={String(filters.ageMin)}
+                  onChangeText={(t) => setFilters({ ageMin: Number(t) || 18 })}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <CustomTextInput
+                  label="Max"
+                  keyboardType="number-pad"
+                  value={String(filters.ageMax)}
+                  onChangeText={(t) => setFilters({ ageMax: Number(t) || 50 })}
+                />
+              </View>
+            </View>
 
-          <Text style={styles.section}>Profession</Text>
-          <View style={styles.chips}>
-            {PROFESSION_OPTIONS.map((p) => (
-              <Chip
-                key={p}
-                label={p}
-                active={filters.profession === p}
-                onPress={() =>
-                  setFilters({ profession: filters.profession === p ? '' : p })
-                }
-              />
-            ))}
-          </View>
+            <View style={styles.row}>
+              <View style={{ flex: 1 }}>
+                <CustomTextInput
+                  label="Height Min"
+                  value={filters.heightMin}
+                  onChangeText={(t) => setFilters({ heightMin: t })}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <CustomTextInput
+                  label="Height Max"
+                  value={filters.heightMax}
+                  onChangeText={(t) => setFilters({ heightMax: t })}
+                />
+              </View>
+            </View>
 
-          <Text style={styles.section}>Education</Text>
-          <View style={styles.chips}>
-            {EDUCATION_OPTIONS.map((p) => (
-              <Chip
-                key={p}
-                label={p}
-                active={filters.education === p}
-                onPress={() =>
-                  setFilters({ education: filters.education === p ? '' : p })
-                }
-              />
-            ))}
-          </View>
-
-          <Text style={styles.section}>Sect</Text>
-          <View style={styles.chips}>
-            {SECT_OPTIONS.map((p) => (
-              <Chip
-                key={p}
-                label={p}
-                active={filters.sect === p}
-                onPress={() =>
-                  setFilters({ sect: filters.sect === p ? '' : p })
-                }
-              />
-            ))}
-          </View>
-
-          <Text style={styles.section}>Language</Text>
-          <View style={styles.chips}>
-            {LANGUAGE_OPTIONS.map((p) => (
-              <Chip
-                key={p}
-                label={p}
-                active={filters.language === p}
-                onPress={() =>
-                  setFilters({ language: filters.language === p ? '' : p })
-                }
-              />
-            ))}
-          </View>
-
-          <Text style={styles.section}>Marital Status</Text>
-          <View style={styles.chips}>
-            {MARITAL_STATUS_OPTIONS.map((p) => (
-              <Chip
-                key={p}
-                label={p}
-                active={filters.maritalStatus === p}
-                onPress={() =>
-                  setFilters({
-                    maritalStatus: filters.maritalStatus === p ? '' : p,
-                  })
-                }
-              />
-            ))}
-          </View>
-
-          <Text style={styles.section}>Income</Text>
-          <View style={styles.chips}>
-            {INCOME_OPTIONS.map((p) => (
-              <Chip
-                key={p}
-                label={p}
-                active={filters.income === p}
-                onPress={() =>
-                  setFilters({ income: filters.income === p ? '' : p })
-                }
-              />
-            ))}
-          </View>
-
-          <View style={styles.actions}>
-            <PremiumButton
-              title="Show Matches"
-              onPress={() => setShowFilters(false)}
+            <CustomTextInput
+              label="City"
+              value={filters.city}
+              onChangeText={(t) => setFilters({ city: t })}
+              placeholder="Mumbai"
             />
-            <PremiumButton
-              title="Reset Filters"
-              variant="outline"
-              onPress={resetFilters}
-              style={{ marginTop: 12 }}
+            <CustomTextInput
+              label="State"
+              value={filters.state}
+              onChangeText={(t) => setFilters({ state: t })}
+              placeholder="Maharashtra"
             />
-          </View>
-        </ScrollView>
+            <CustomTextInput
+              label="Country"
+              value={filters.country}
+              onChangeText={(t) => setFilters({ country: t })}
+              placeholder="India"
+            />
+
+            <Text style={styles.section}>Profession</Text>
+            <View style={styles.chips}>
+              {PROFESSION_OPTIONS.map((p) => (
+                <Chip
+                  key={p}
+                  label={p}
+                  active={filters.profession === p}
+                  onPress={() =>
+                    setFilters({ profession: filters.profession === p ? '' : p })
+                  }
+                />
+              ))}
+            </View>
+
+            <Text style={styles.section}>Education</Text>
+            <View style={styles.chips}>
+              {EDUCATION_OPTIONS.map((p) => (
+                <Chip
+                  key={p}
+                  label={p}
+                  active={filters.education === p}
+                  onPress={() =>
+                    setFilters({ education: filters.education === p ? '' : p })
+                  }
+                />
+              ))}
+            </View>
+
+            <Text style={styles.section}>Sect</Text>
+            <View style={styles.chips}>
+              {SECT_OPTIONS.map((p) => (
+                <Chip
+                  key={p}
+                  label={p}
+                  active={filters.sect === p}
+                  onPress={() =>
+                    setFilters({ sect: filters.sect === p ? '' : p })
+                  }
+                />
+              ))}
+            </View>
+
+            <Text style={styles.section}>Language</Text>
+            <View style={styles.chips}>
+              {LANGUAGE_OPTIONS.map((p) => (
+                <Chip
+                  key={p}
+                  label={p}
+                  active={filters.language === p}
+                  onPress={() =>
+                    setFilters({ language: filters.language === p ? '' : p })
+                  }
+                />
+              ))}
+            </View>
+
+            <Text style={styles.section}>Marital Status</Text>
+            <View style={styles.chips}>
+              {MARITAL_STATUS_OPTIONS.map((p) => (
+                <Chip
+                  key={p}
+                  label={p}
+                  active={filters.maritalStatus === p}
+                  onPress={() =>
+                    setFilters({
+                      maritalStatus: filters.maritalStatus === p ? '' : p,
+                    })
+                  }
+                />
+              ))}
+            </View>
+
+            <Text style={styles.section}>Income</Text>
+            <View style={styles.chips}>
+              {INCOME_OPTIONS.map((p) => (
+                <Chip
+                  key={p}
+                  label={p}
+                  active={filters.income === p}
+                  onPress={() =>
+                    setFilters({ income: filters.income === p ? '' : p })
+                  }
+                />
+              ))}
+            </View>
+
+            <View style={styles.actions}>
+              <PremiumButton
+                title="Show Matches"
+                onPress={() => setShowFilters(false)}
+              />
+              <PremiumButton
+                title="Reset Filters"
+                variant="outline"
+                onPress={resetFilters}
+                style={{ marginTop: 12 }}
+              />
+            </View>
+          </ScrollView>
+        </>
       ) : (
-        <FlatList
-          data={results}
-          keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.rowWrap}
-          contentContainerStyle={[
-            styles.listContent,
-            { paddingBottom: insets.bottom + 110 },
-          ]}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <Text style={styles.empty}>
-              No profiles match your filters. Try adjusting filters.
+        <View
+          style={[styles.matchBody, { backgroundColor: theme.primaryDark }]}
+          onLayout={onStageLayout}
+          {...panResponder.panHandlers}
+        >
+          {current && cardWidth > 0 ? (
+            <MatchFrameCard
+              key={current.id}
+              profile={current}
+              width={cardWidth}
+              height={stage.height}
+              contactLocked={isFree}
+              onPressPhoto={() => openPhotos(current.id)}
+            />
+          ) : (
+            <Text style={[styles.empty, styles.emptyOnDark]}>
+              No profiles match your filters.
             </Text>
-          }
-          renderItem={({ item }) => (
-            <View style={styles.gridItem}>
-              <ProfileCard
-                profile={item}
-                compact
-                onPress={() => openProfile(item.id)}
-                onFavourite={() => toggleFavourite(item.id)}
-                isFavourite={favouriteIds.includes(item.id)}
-              />
-            </View>
           )}
-        />
+
+          {current ? (
+            <PhotoGalleryModal
+              visible={showGallery}
+              images={current.images}
+              name={current.name}
+              onClose={() => setShowGallery(false)}
+            />
+          ) : null}
+        </View>
       )}
     </View>
   );
@@ -325,7 +372,6 @@ export const SearchScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   filterBtn: {
     width: 40,
@@ -340,13 +386,11 @@ const styles = StyleSheet.create({
   content: {
     padding: spacing.xl,
   },
-  listContent: {
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
-  },
-  rowWrap: {
-    justifyContent: 'space-between',
-    marginBottom: 12,
+  matchBody: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
   section: {
     fontFamily: fonts.semiBold,
@@ -389,14 +433,14 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     marginBottom: spacing.xxl,
   },
-  gridItem: {
-    width: '48%',
-  },
   empty: {
     fontFamily: fonts.regular,
     fontSize: 14,
     color: colors.textMuted,
     textAlign: 'center',
     marginTop: spacing.xxxl,
+  },
+  emptyOnDark: {
+    color: 'rgba(255,255,255,0.75)',
   },
 });

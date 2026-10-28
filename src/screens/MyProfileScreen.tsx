@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -13,11 +14,14 @@ import {
   ArrowLeft,
   BadgeCheck,
   Camera,
+  Check,
   ChevronRight,
   Crown,
   Download,
+  Globe,
   Heart,
   HelpCircle,
+  LogOut,
   Moon,
   Settings,
   Share2,
@@ -27,9 +31,10 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { PremiumButton, ProfileBadge } from '../components';
+import { BottomSheet, PremiumButton, ProfileBadge } from '../components';
 import { useProfileStore } from '../store/useProfileStore';
 import { useAppStore } from '../store/useAppStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { RootStackParamList } from '../navigation/types';
 import { downloadProfileResume, shareProfileResume } from '../utils';
 import { colors, fonts, radius, shadows, spacing, useThemeColors } from '../theme';
@@ -78,8 +83,20 @@ export const MyProfileScreen: React.FC = () => {
   const membership = useAppStore((s) => s.membership);
   const darkMode = useAppStore((s) => s.darkMode);
   const toggleDarkMode = useAppStore((s) => s.toggleDarkMode);
+  const language = useAppStore((s) => s.language);
+  const setLanguage = useAppStore((s) => s.setLanguage);
+  const logout = useAuthStore((s) => s.logout);
   const theme = useThemeColors();
   const [exporting, setExporting] = useState<'download' | 'share' | null>(null);
+  const [langOpen, setLangOpen] = useState(false);
+
+  const handleLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
+      // RootNavigator returns to Auth when isAuthenticated becomes false
+      { text: 'Logout', style: 'destructive', onPress: logout },
+    ]);
+  };
 
   const handleDownloadResume = async () => {
     setExporting('download');
@@ -139,8 +156,13 @@ export const MyProfileScreen: React.FC = () => {
           </Pressable>
         </View>
         <Text style={styles.name}>{myProfile.name}</Text>
+        {myProfile.accountId ? (
+          <Text style={styles.accountId}>{myProfile.accountId}</Text>
+        ) : null}
         <Text style={styles.meta}>
-          {myProfile.age} · {myProfile.city} · {myProfile.profession}
+          {myProfile.membership === 'FREE' ? 'Free Account' : `${myProfile.membership} Account`}
+          {' · '}
+          {myProfile.age} · {myProfile.city}
         </Text>
         <View style={styles.badges}>
           {myProfile.isVerified && (
@@ -249,6 +271,14 @@ export const MyProfileScreen: React.FC = () => {
             </Pressable>
           </View>
           <MenuItem
+            icon={Globe}
+            label="Language"
+            value={language}
+            onPress={() => setLangOpen(true)}
+            accent={theme.accent}
+            text={theme.text}
+          />
+          <MenuItem
             icon={Settings}
             label="Settings"
             onPress={() => navigation.navigate('Settings')}
@@ -263,10 +293,47 @@ export const MyProfileScreen: React.FC = () => {
             text={theme.text}
           />
         </View>
+
+        <PremiumButton
+          title="Logout"
+          variant="outline"
+          onPress={handleLogout}
+          icon={<LogOut size={18} color={colors.primary} />}
+          style={{ marginTop: spacing.xl }}
+        />
       </View>
+
+      <BottomSheet
+        visible={langOpen}
+        onClose={() => setLangOpen(false)}
+        title="Choose Language"
+      >
+        {LANGUAGES.map((lang) => {
+          const selected = language === lang;
+          return (
+            <Pressable
+              key={lang}
+              style={[styles.langItem, selected && styles.langItemActive]}
+              onPress={() => {
+                setLanguage(lang);
+                setLangOpen(false);
+              }}
+            >
+              <Text
+                style={[styles.langText, selected && styles.langTextActive]}
+              >
+                {lang === 'Hindi' ? 'हिंदी (Hindi)' : lang}
+              </Text>
+              {selected ? <Check size={18} color={colors.accent} /> : null}
+            </Pressable>
+          );
+        })}
+      </BottomSheet>
     </ScrollView>
   );
 };
+
+const LANGUAGES = ['English', 'Hindi'] as const;
 
 const styles = StyleSheet.create({
   container: {
@@ -330,6 +397,13 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bold,
     fontSize: 24,
     color: colors.surface,
+  },
+  accountId: {
+    fontFamily: fonts.semiBold,
+    fontSize: 14,
+    color: colors.accent,
+    marginTop: 4,
+    letterSpacing: 0.4,
   },
   meta: {
     fontFamily: fonts.regular,
@@ -434,5 +508,30 @@ const styles = StyleSheet.create({
   actionLabel: {
     fontFamily: fonts.medium,
     fontSize: 15,
+  },
+  langItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  langItemActive: {
+    backgroundColor: 'rgba(212,175,55,0.08)',
+    borderRadius: radius.lg,
+    paddingHorizontal: 12,
+    borderBottomWidth: 0,
+    marginBottom: 6,
+  },
+  langText: {
+    fontFamily: fonts.medium,
+    fontSize: 16,
+    color: colors.text,
+  },
+  langTextActive: {
+    color: colors.primary,
+    fontFamily: fonts.semiBold,
   },
 });

@@ -8,9 +8,11 @@ export interface RegisterDraft {
   lastName: string;
   email: string;
   phone: string;
+  parentPhone: string;
   city: string;
   state: string;
   education: string;
+  profession: string;
   height: string;
   caste: string;
   gender: RegisterGender | '';
@@ -33,9 +35,11 @@ const initial: RegisterDraft = {
   lastName: '',
   email: '',
   phone: '',
+  parentPhone: '',
   city: '',
   state: '',
   education: '',
+  profession: '',
   height: '',
   caste: '',
   gender: '',

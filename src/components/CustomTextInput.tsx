@@ -15,6 +15,7 @@ interface Props extends TextInputProps {
   left?: React.ReactNode;
   right?: React.ReactNode;
   containerStyle?: ViewStyle;
+  compact?: boolean;
 }
 
 export const CustomTextInput: React.FC<Props> = ({
@@ -24,15 +25,24 @@ export const CustomTextInput: React.FC<Props> = ({
   right,
   style,
   containerStyle,
+  compact,
   ...rest
 }) => (
   <View style={[styles.wrapper, containerStyle]}>
-    {label ? <Text style={styles.label}>{label}</Text> : null}
-    <View style={[styles.field, error ? styles.fieldError : null]}>
+    {label ? (
+      <Text style={[styles.label, compact && styles.labelCompact]}>{label}</Text>
+    ) : null}
+    <View
+      style={[
+        styles.field,
+        compact && styles.fieldCompact,
+        error ? styles.fieldError : null,
+      ]}
+    >
       {left}
       <TextInput
         placeholderTextColor={colors.textMuted}
-        style={[styles.input, style]}
+        style={[styles.input, compact && styles.inputCompact, style]}
         {...rest}
       />
       {right}
@@ -62,6 +72,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
   },
+  fieldCompact: {
+    minHeight: 42,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.lg,
+    gap: 8,
+  },
   fieldError: {
     borderColor: colors.error,
   },
@@ -71,6 +87,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.text,
     paddingVertical: 14,
+  },
+  inputCompact: {
+    fontSize: 14,
+    paddingVertical: 8,
+  },
+  labelCompact: {
+    fontSize: 12,
+    marginBottom: 6,
   },
   error: {
     fontFamily: fonts.regular,

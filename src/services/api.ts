@@ -21,7 +21,12 @@ export const authService = {
   },
   verifyOtp: async (otp: string) => {
     await delay();
-    return { success: otp.length === 4, token: 'dummy-jwt-token' };
+    const ok = otp.length === 4;
+    return {
+      success: ok,
+      token: 'dummy-jwt-token',
+      message: ok ? 'OTP verified' : 'Please enter a valid 4-digit OTP',
+    };
   },
   /** Dummy password login — any password with 6+ chars succeeds */
   loginWithPassword: async (phone: string, password: string) => {

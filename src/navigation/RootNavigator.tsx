@@ -19,15 +19,31 @@ import {
 } from '../screens';
 import { useAuthStore } from '../store/useAuthStore';
 import { getThemeColors } from '../theme';
-import { PremiumPopup, ProfileCreatedPopup } from '../components';
+import {
+  PremiumOfferPopup,
+  PremiumPopup,
+  ProfileCreatedPopup,
+} from '../components';
+import { membershipPlans } from '../data/membership';
 import { useAppStore } from '../store/useAppStore';
 import { useNavigationContainerRef } from '@react-navigation/native';
 import { useProfileStore } from '../store/useProfileStore';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const OFFER_PLANS = membershipPlans.filter((p) => p.id !== 'FREE');
+
 export const RootNavigator = () => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const showLoginOffer = useAuthStore((s) => s.showLoginOffer);
+  const setShowLoginOffer = useAuthStore((s) => s.setShowLoginOffer);
+  const setHasSeenPremiumOffer = useAuthStore((s) => s.setHasSeenPremiumOffer);
+
+  // Offer already seen this session → don't repeat it on the Premium tab
+  const dismissLoginOffer = () => {
+    setShowLoginOffer(false);
+    setHasSeenPremiumOffer(true);
+  };
   const showPremiumPopup = useAppStore((s) => s.showPremiumPopup);
   const setShowPremiumPopup = useAppStore((s) => s.setShowPremiumPopup);
   const showProfileCreatedPopup = useAppStore((s) => s.showProfileCreatedPopup);
@@ -90,9 +106,21 @@ export const RootNavigator = () => {
       <ProfileCreatedPopup
         visible={showProfileCreatedPopup && showMain}
         name={myProfile.name}
+        accountId={myProfile.accountId}
         onContinue={() => {
           setShowProfileCreatedPopup(false);
           navigationRef.navigate('Main', { screen: 'Matches' });
+        }}
+      />
+
+      {/* After login; waits until the account-created popup is dismissed */}
+      <PremiumOfferPopup
+        visible={showLoginOffer && showMain && !showProfileCreatedPopup}
+        plans={OFFER_PLANS}
+        onClose={dismissLoginOffer}
+        onGrab={() => {
+          dismissLoginOffer();
+          navigationRef.navigate('Main', { screen: 'Premium' });
         }}
       />
     </NavigationContainer>

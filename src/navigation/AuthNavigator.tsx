@@ -6,6 +6,7 @@ import {
   MembershipScreen,
   OnboardingScreen,
   OTPScreen,
+  RegisterCareerScreen,
   RegisterContactScreen,
   RegisterDetailsScreen,
   RegisterNameScreen,
@@ -30,8 +31,9 @@ export const AuthNavigator = () => (
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="Signup" component={SignupScreen} />
     <Stack.Screen name="RegisterName" component={RegisterNameScreen} />
-    <Stack.Screen name="RegisterContact" component={RegisterContactScreen} />
     <Stack.Screen name="RegisterDetails" component={RegisterDetailsScreen} />
+    <Stack.Screen name="RegisterCareer" component={RegisterCareerScreen} />
+    <Stack.Screen name="RegisterContact" component={RegisterContactScreen} />
     <Stack.Screen name="OTP" component={OTPScreen} />
     <Stack.Screen name="Membership" component={MembershipScreen} />
   </Stack.Navigator>

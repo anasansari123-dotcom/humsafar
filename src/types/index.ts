@@ -10,6 +10,8 @@ export type Sect = 'Sunni' | 'Shia' | 'Bohra' | 'Other';
 
 export interface Profile {
   id: string;
+  /** Public unique account ID e.g. HSq1899086 */
+  accountId: string;
   name: string;
   age: number;
   gender: 'Male' | 'Female';
@@ -23,6 +25,7 @@ export interface Profile {
   language: string;
   maritalStatus: MaritalStatus;
   caste?: string;
+  parentPhone?: string;
   income: string;
   about: string;
   family: string;
@@ -42,6 +45,8 @@ export interface MembershipPlan {
   id: MembershipTier;
   name: string;
   price: number;
+  /** Pre-offer price, shown struck through */
+  originalPrice?: number;
   period: string;
   tagline: string;
   features: string[];

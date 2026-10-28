@@ -28,6 +28,8 @@ interface Props {
   style?: ViewStyle;
   textStyle?: TextStyle;
   icon?: React.ReactNode;
+  /** Shorter button (44 instead of 54) */
+  compact?: boolean;
 }
 
 export const PremiumButton: React.FC<Props> = ({
@@ -39,6 +41,7 @@ export const PremiumButton: React.FC<Props> = ({
   style,
   textStyle,
   icon,
+  compact,
 }) => {
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({
@@ -57,6 +60,7 @@ export const PremiumButton: React.FC<Props> = ({
           <Text
             style={[
               styles.text,
+              compact && styles.textCompact,
               variant === 'primary' && styles.textOnPrimary,
               variant === 'outline' && styles.textOutline,
               variant === 'ghost' && styles.textGhost,
@@ -87,7 +91,7 @@ export const PremiumButton: React.FC<Props> = ({
           colors={[...colors.gradientGold]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={[styles.base, shadows.gold]}
+          style={[styles.base, compact && styles.compact, shadows.gold]}
         >
           {content}
         </LinearGradient>
@@ -96,7 +100,7 @@ export const PremiumButton: React.FC<Props> = ({
           colors={[...colors.gradientPrimary]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={[styles.base, shadows.medium]}
+          style={[styles.base, compact && styles.compact, shadows.medium]}
         >
           {content}
         </LinearGradient>
@@ -104,6 +108,7 @@ export const PremiumButton: React.FC<Props> = ({
         <Animated.View
           style={[
             styles.base,
+            compact && styles.compact,
             variant === 'outline' && styles.outline,
             variant === 'ghost' && styles.ghost,
           ]}
@@ -125,10 +130,16 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 24,
   },
+  compact: {
+    minHeight: 44,
+  },
   text: {
     fontFamily: fonts.semiBold,
     fontSize: 16,
     color: colors.textOnAccent,
+  },
+  textCompact: {
+    fontSize: 15,
   },
   textOnPrimary: {
     color: colors.textOnPrimary,

@@ -118,7 +118,7 @@ export const InterestScreen: React.FC = () => {
                 onPress={() => openContact(item.profile)}
                 hitSlop={8}
               >
-                <Phone size={18} color={colors.accent} />
+                <Phone size={18} color={colors.online} />
               </Pressable>
             </Pressable>
 
@@ -161,7 +161,7 @@ export const InterestScreen: React.FC = () => {
                     end={{ x: 1, y: 1 }}
                     style={styles.actionFill}
                   >
-                    <Phone size={14} color={colors.primary} />
+                    <Phone size={14} color={colors.online} />
                     <Text style={styles.acceptText}>Contact</Text>
                   </LinearGradient>
                 </Pressable>
@@ -195,8 +195,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: radius.xl,
     padding: 4,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderWidth: 2.5,
+    borderColor: colors.accent,
   },
   tab: {
     flex: 1,
@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     padding: 14,
     marginBottom: 12,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderWidth: 2,
+    borderColor: colors.accent,
   },
   row: {
     flexDirection: 'row',
@@ -249,11 +249,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: 'rgba(34,197,94,0.12)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: colors.accent,
+    borderColor: colors.online,
   },
   actions: {
     flexDirection: 'row',

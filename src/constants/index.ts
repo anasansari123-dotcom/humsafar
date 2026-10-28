@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 export const APP_NAME = 'HUMSAFAR';
 export const APP_TAGLINE = 'Find Your Perfect Muslim Life Partner';
 export const FREE_PROFILE_LIMIT = 4;
@@ -76,6 +78,16 @@ export const CASTE_OPTIONS = [
   'Shaikh',
   'Other',
 ];
+
+/** Fixed tab content height (icons + labels); safe area added separately */
+export const TAB_BAR_CONTENT_HEIGHT = 64;
+/** Gap between the floating tab bar and the phone's nav bar */
+export const TAB_BAR_BOTTOM_LIFT = 10;
+
+/** Floating tab bar's `bottom` offset, clearing Android 3-button / gesture nav */
+export const getTabBarBottom = (insetBottom: number) =>
+  Math.max(insetBottom, Platform.OS === 'android' ? 24 : 10) +
+  TAB_BAR_BOTTOM_LIFT;
 
 export const GENDER_OPTIONS = ['Male', 'Female'] as const;
 

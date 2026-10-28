@@ -19,6 +19,7 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Avatar, GradientHeader } from '../components';
 import { conversations } from '../data/chats';
+import { profiles } from '../data/profiles';
 import { RootStackParamList } from '../navigation/types';
 import { ChatMessage } from '../types';
 import { colors, fonts, radius, spacing } from '../theme';
@@ -27,10 +28,29 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ChatRoom'>;
 
 export const ChatScreen: React.FC<Props> = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
-  const conversation = useMemo(
-    () => conversations.find((c) => c.id === route.params.conversationId),
-    [route.params.conversationId],
-  );
+  const { conversationId, profileId } = route.params;
+  const conversation = useMemo(() => {
+    const existing = conversations.find(
+      (c) =>
+        (conversationId && c.id === conversationId) ||
+        (profileId && c.profileId === profileId),
+    );
+    if (existing) return existing;
+    // New chat started from a match — open an empty conversation
+    const profile = profiles.find((p) => p.id === profileId);
+    if (!profile) return undefined;
+    return {
+      id: `new-${profile.id}`,
+      profileId: profile.id,
+      name: profile.name,
+      avatar: profile.images[0],
+      lastMessage: '',
+      timestamp: 'Now',
+      unread: 0,
+      online: !!profile.online,
+      messages: [],
+    };
+  }, [conversationId, profileId]);
   const [messages, setMessages] = useState<ChatMessage[]>(
     conversation?.messages ?? [],
   );

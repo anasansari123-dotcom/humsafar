@@ -20,7 +20,8 @@ export const membershipPlans: MembershipPlan[] = [
     id: 'SILVER',
     name: 'SILVER',
     price: 999,
-    period: '/ month',
+    originalPrice: 4999,
+    period: '/ 1 month',
     tagline: 'Essential premium',
     color: '#A8A9AD',
     features: [
@@ -34,8 +35,9 @@ export const membershipPlans: MembershipPlan[] = [
   {
     id: 'GOLD',
     name: 'GOLD',
-    price: 1999,
-    period: '/ month',
+    price: 2999,
+    originalPrice: 14999,
+    period: '/ 3 months',
     tagline: 'Most popular choice',
     highlighted: true,
     color: colors.accent,
@@ -51,8 +53,9 @@ export const membershipPlans: MembershipPlan[] = [
   {
     id: 'PLATINUM',
     name: 'PLATINUM',
-    price: 3999,
-    period: '/ month',
+    price: 5999,
+    originalPrice: 29999,
+    period: '/ 6 months',
     tagline: 'Ultimate luxury matchmaking',
     color: '#E5E4E2',
     features: [

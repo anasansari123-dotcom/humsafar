@@ -6,6 +6,7 @@ const img = (id: number, gender: 'men' | 'women') =>
 export const profiles: Profile[] = [
   {
     id: 'p1',
+    accountId: 'HSb1137941',
     name: 'Ayesha Khan',
     age: 26,
     gender: 'Female',
@@ -27,6 +28,7 @@ export const profiles: Profile[] = [
     partnerPreference:
       'Looking for a practising, respectful, well-educated partner with strong family values.',
     images: [img(44, 'women'), img(65, 'women'), img(68, 'women')],
+    parentPhone: '9876654321',
     isVerified: true,
     isPremium: true,
     membership: 'GOLD',
@@ -36,6 +38,7 @@ export const profiles: Profile[] = [
   },
   {
     id: 'p2',
+    accountId: 'HSc1275882',
     name: 'Omar Siddiqui',
     age: 29,
     gender: 'Male',
@@ -55,6 +58,7 @@ export const profiles: Profile[] = [
     lifestyle: 'Healthy lifestyle, loves cricket, Quran study circles and travel.',
     partnerPreference: 'Educated, warm-hearted, family-oriented Muslimah.',
     images: [img(32, 'men'), img(52, 'men')],
+    parentPhone: '9876765432',
     isVerified: true,
     isPremium: true,
     membership: 'PLATINUM',
@@ -65,6 +69,7 @@ export const profiles: Profile[] = [
   },
   {
     id: 'p3',
+    accountId: 'HSd1413823',
     name: 'Fatima Noor',
     age: 24,
     gender: 'Female',
@@ -84,6 +89,7 @@ export const profiles: Profile[] = [
     lifestyle: 'Artistic, soft-spoken, loves chai and evening walks.',
     partnerPreference: 'Kind, practising Muslim with respect for creativity and family.',
     images: [img(47, 'women'), img(49, 'women')],
+    parentPhone: '9876876543',
     isVerified: true,
     isPremium: false,
     membership: 'FREE',
@@ -93,6 +99,7 @@ export const profiles: Profile[] = [
   },
   {
     id: 'p4',
+    accountId: 'HSe1551764',
     name: 'Zain Ahmed',
     age: 31,
     gender: 'Male',
@@ -112,6 +119,7 @@ export const profiles: Profile[] = [
     lifestyle: 'Travels often, fitness enthusiast, volunteers at local mosque.',
     partnerPreference: 'Independent, faith-centred partner ready for a shared journey.',
     images: [img(15, 'men'), img(22, 'men')],
+    parentPhone: '9876987654',
     isVerified: true,
     isPremium: true,
     membership: 'GOLD',
@@ -122,6 +130,7 @@ export const profiles: Profile[] = [
   },
   {
     id: 'p5',
+    accountId: 'HSf1689705',
     name: 'Maryam Ali',
     age: 27,
     gender: 'Female',
@@ -141,6 +150,7 @@ export const profiles: Profile[] = [
     lifestyle: 'Loves reading, gardening and community tutoring.',
     partnerPreference: 'Respectful, educated, emotionally mature partner.',
     images: [img(33, 'women'), img(36, 'women')],
+    parentPhone: '9877098765',
     isVerified: false,
     isPremium: false,
     membership: 'FREE',
@@ -150,6 +160,7 @@ export const profiles: Profile[] = [
   },
   {
     id: 'p6',
+    accountId: 'HSg1827646',
     name: 'Hassan Rahman',
     age: 28,
     gender: 'Male',
@@ -169,6 +180,7 @@ export const profiles: Profile[] = [
     lifestyle: 'Balanced work-life, gym regularly, weekly Islamic classes.',
     partnerPreference: 'Warm, communicative, practising Muslimah.',
     images: [img(11, 'men'), img(18, 'men')],
+    parentPhone: '9877209876',
     isVerified: true,
     isPremium: true,
     membership: 'SILVER',
@@ -178,6 +190,7 @@ export const profiles: Profile[] = [
   },
   {
     id: 'p7',
+    accountId: 'HSh1965587',
     name: 'Sana Qureshi',
     age: 25,
     gender: 'Female',
@@ -197,6 +210,7 @@ export const profiles: Profile[] = [
     lifestyle: 'Professional, elegant, active in charity work.',
     partnerPreference: 'Career-driven yet family-first practising Muslim.',
     images: [img(21, 'women'), img(25, 'women')],
+    parentPhone: '9877320987',
     isVerified: true,
     isPremium: true,
     membership: 'PLATINUM',
@@ -207,6 +221,7 @@ export const profiles: Profile[] = [
   },
   {
     id: 'p8',
+    accountId: 'HSi2103528',
     name: 'Ibrahim Malik',
     age: 33,
     gender: 'Male',
@@ -226,6 +241,7 @@ export const profiles: Profile[] = [
     lifestyle: 'Reads widely, mentors youth, enjoys quiet weekends.',
     partnerPreference: 'Understanding, practising partner open to companionship.',
     images: [img(45, 'men'), img(50, 'men')],
+    parentPhone: '9877432098',
     isVerified: true,
     isPremium: true,
     membership: 'GOLD',
@@ -235,6 +251,7 @@ export const profiles: Profile[] = [
   },
   {
     id: 'p9',
+    accountId: 'HSj2241469',
     name: 'Hira Shaikh',
     age: 23,
     gender: 'Female',
@@ -254,6 +271,7 @@ export const profiles: Profile[] = [
     lifestyle: 'Sketching, photography, Friday family dinners.',
     partnerPreference: 'Creative, respectful, spiritually aware partner.',
     images: [img(12, 'women'), img(19, 'women')],
+    parentPhone: '9877543209',
     isVerified: false,
     isPremium: false,
     membership: 'FREE',
@@ -264,6 +282,7 @@ export const profiles: Profile[] = [
   },
   {
     id: 'p10',
+    accountId: 'HSk2379410',
     name: 'Yusuf Farooq',
     age: 30,
     gender: 'Male',
@@ -283,6 +302,7 @@ export const profiles: Profile[] = [
     lifestyle: 'Tea lover, football fan, active in local community.',
     partnerPreference: 'Gentle, practising, family-oriented partner.',
     images: [img(60, 'men'), img(61, 'men')],
+    parentPhone: '9877654320',
     isVerified: true,
     isPremium: false,
     membership: 'SILVER',
@@ -292,6 +312,7 @@ export const profiles: Profile[] = [
   },
   {
     id: 'p11',
+    accountId: 'HSl2517351',
     name: 'Amira Hussain',
     age: 28,
     gender: 'Female',
@@ -311,6 +332,7 @@ export const profiles: Profile[] = [
     lifestyle: 'Busy but intentional. Loves calligraphy and coastal walks.',
     partnerPreference: 'Supportive, ambitious, faith-aligned partner.',
     images: [img(55, 'women'), img(57, 'women')],
+    parentPhone: '9877765431',
     isVerified: true,
     isPremium: true,
     membership: 'GOLD',
@@ -321,6 +343,7 @@ export const profiles: Profile[] = [
   },
   {
     id: 'p12',
+    accountId: 'HSm2655292',
     name: 'Bilal Ansari',
     age: 27,
     gender: 'Male',
@@ -340,6 +363,7 @@ export const profiles: Profile[] = [
     lifestyle: 'Creative, social weekends, Friday prayers at local masjid.',
     partnerPreference: 'Creative, soft-spoken, practising Muslimah.',
     images: [img(75, 'men'), img(78, 'men')],
+    parentPhone: '9877876542',
     isVerified: false,
     isPremium: false,
     membership: 'FREE',
@@ -351,6 +375,7 @@ export const profiles: Profile[] = [
 
 export const currentUserProfile: Profile = {
   id: 'me',
+  accountId: 'HSn2793233',
   name: 'Ayaan Rizvi',
   age: 28,
   gender: 'Male',
@@ -371,6 +396,7 @@ export const currentUserProfile: Profile = {
   partnerPreference:
     'Looking for a practising, kind-hearted, educated Muslimah with strong family values.',
   images: [img(33, 'men'), img(34, 'men'), img(36, 'men')],
+  parentPhone: '9877987653',
   isVerified: true,
   isPremium: false,
   membership: 'FREE',

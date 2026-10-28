@@ -6,11 +6,12 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Bell, Menu, Moon, Sun } from 'lucide-react-native';
+import { Bell, Menu } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -38,9 +39,9 @@ type HomeNav = CompositeNavigationProp<
 
 const SCREEN_W = Dimensions.get('window').width;
 const HOME_LIST_PAD = spacing.xl;
-const HOME_CARD_GAP = 12;
-/** Match Matches-page card size (48% width, aspect ratio 0.78) */
-const HOME_CARD_W = (SCREEN_W - HOME_LIST_PAD * 2) * 0.48;
+const HOME_CARD_GAP = 10;
+/** 2-column grid — balanced card size */
+const HOME_CARD_W = (SCREEN_W - HOME_LIST_PAD * 2 - HOME_CARD_GAP) / 2 * 0.97;
 const HOME_CARD_H = HOME_CARD_W / 0.78;
 
 export const HomeScreen: React.FC = () => {
@@ -63,12 +64,19 @@ export const HomeScreen: React.FC = () => {
     () => ({
       width: HOME_CARD_W,
       height: HOME_CARD_H,
+    }),
+    [],
+  );
+  const homeHCardStyle = useMemo(
+    () => ({
+      width: HOME_CARD_W,
+      height: HOME_CARD_H,
       marginRight: HOME_CARD_GAP,
     }),
     [],
   );
 
-  const recommended = useMemo(() => profiles.slice(0, 6), []);
+  const recommended = useMemo(() => profiles.slice(0, 4), []);
   const newMembers = useMemo(() => profiles.slice(2, 8), []);
   const nearby = useMemo(
     () => [...profiles].sort((a, b) => (a.distanceKm ?? 99) - (b.distanceKm ?? 99)).slice(0, 6),
@@ -120,6 +128,18 @@ export const HomeScreen: React.FC = () => {
           </View>
 
           <View style={styles.rightActions}>
+            <Switch
+              value={darkMode}
+              onValueChange={toggleDarkMode}
+              // Gold track stays visible on both purple and green headers
+              trackColor={{ false: colors.accent, true: colors.accent }}
+              thumbColor="#FFFFFF"
+              ios_backgroundColor={colors.accent}
+              style={styles.themeSwitch}
+              accessibilityLabel={
+                darkMode ? 'Switch to purple theme' : 'Switch to green theme'
+              }
+            />
             <Pressable
               style={styles.iconBtn}
               onPress={() => navigation.navigate('Notifications')}
@@ -127,19 +147,6 @@ export const HomeScreen: React.FC = () => {
             >
               <Bell size={18} color={colors.accent} />
               <View style={styles.dot} />
-            </Pressable>
-            <Pressable
-              style={styles.iconBtn}
-              onPress={toggleDarkMode}
-              accessibilityLabel={
-                darkMode ? 'Switch to purple theme' : 'Switch to green theme'
-              }
-            >
-              {darkMode ? (
-                <Sun size={17} color={colors.accent} />
-              ) : (
-                <Moon size={17} color={colors.accent} />
-              )}
             </Pressable>
           </View>
         </View>
@@ -154,30 +161,29 @@ export const HomeScreen: React.FC = () => {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120, paddingTop: spacing.xl }}
+        contentContainerStyle={{
+          paddingBottom: insets.bottom + 130,
+          paddingTop: spacing.md,
+        }}
       >
         <SectionHeader
           title="Recommended Matches"
-          subtitle="Curated for you"
           onAction={() => {}}
         />
-        <FlatList
-          horizontal
-          data={recommended}
-          keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.hList}
-          renderItem={({ item }) => (
+        <View style={styles.grid}>
+          {recommended.map((item) => (
             <ProfileCard
+              key={item.id}
               profile={item}
               onPress={() => openProfile(item.id)}
               onFavourite={() => toggleFavourite(item.id)}
               isFavourite={favouriteIds.includes(item.id)}
               style={homeCardStyle}
             />
-          )}
-        />
+          ))}
+        </View>
 
+        <SectionHeader title="New Members" />
         <FlatList
           horizontal
           data={newMembers}
@@ -188,7 +194,7 @@ export const HomeScreen: React.FC = () => {
             <ProfileCard
               profile={item}
               onPress={() => openProfile(item.id)}
-              style={homeCardStyle}
+              style={homeHCardStyle}
             />
           )}
         />
@@ -204,7 +210,7 @@ export const HomeScreen: React.FC = () => {
             <ProfileCard
               profile={item}
               onPress={() => openProfile(item.id)}
-              style={homeCardStyle}
+              style={homeHCardStyle}
             />
           )}
         />
@@ -220,7 +226,7 @@ export const HomeScreen: React.FC = () => {
             <ProfileCard
               profile={item}
               onPress={() => openProfile(item.id)}
-              style={homeCardStyle}
+              style={homeHCardStyle}
             />
           )}
         />
@@ -236,7 +242,7 @@ export const HomeScreen: React.FC = () => {
             <ProfileCard
               profile={item}
               onPress={() => openProfile(item.id)}
-              style={homeCardStyle}
+              style={homeHCardStyle}
             />
           )}
         />
@@ -283,14 +289,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 12,
-    paddingHorizontal: spacing.lg,
+    paddingLeft: spacing.sm,
+    paddingRight: spacing.lg,
     minHeight: 46,
   },
   leftHeader: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
     minWidth: 0,
   },
   menuBtn: {
@@ -302,6 +309,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1.5,
     borderColor: colors.accent,
+    marginLeft: -2,
   },
   greetRow: {
     flex: 1,
@@ -324,6 +332,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.surface,
   },
+  /** Toggle + bell in one row, vertically centred with the avatar */
   rightActions: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -339,6 +348,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: colors.accent,
   },
+  themeSwitch: {
+    transform: [{ scaleX: 0.82 }, { scaleY: 0.82 }],
+  },
   dot: {
     position: 'absolute',
     top: 8,
@@ -349,8 +361,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent,
   },
   search: {
-    marginTop: spacing.lg,
+    marginTop: spacing.xl + 6,
     marginHorizontal: spacing.lg,
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    columnGap: HOME_CARD_GAP,
+    paddingHorizontal: HOME_LIST_PAD,
+    rowGap: HOME_CARD_GAP,
+    marginBottom: spacing.lg,
   },
   hList: {
     paddingHorizontal: spacing.xl,

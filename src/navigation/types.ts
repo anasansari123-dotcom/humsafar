@@ -9,8 +9,9 @@ export type AuthStackParamList = {
   OTP: { mode?: 'login' | 'register' } | undefined;
   Membership: undefined;
   RegisterName: undefined;
-  RegisterContact: undefined;
   RegisterDetails: undefined;
+  RegisterCareer: undefined;
+  RegisterContact: undefined;
 };
 
 export type MainTabParamList = {
@@ -27,7 +28,7 @@ export type RootStackParamList = {
   ProfileDetails: { profileId: string };
   MembershipUpgrade: undefined;
   MyProfile: undefined;
-  ChatRoom: { conversationId: string };
+  ChatRoom: { conversationId?: string; profileId?: string };
   Notifications: undefined;
   Favourites: undefined;
   EditProfile: { section?: string } | undefined;

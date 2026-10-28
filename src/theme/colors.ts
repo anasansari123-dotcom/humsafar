@@ -18,8 +18,24 @@ const shared = {
   blur: 'rgba(248, 248, 248, 0.85)',
 };
 
+type ThemePalette = typeof shared & {
+  primary: string;
+  primaryDark: string;
+  secondary: string;
+  text: string;
+  textSecondary: string;
+  textOnAccent: string;
+  border: string;
+  overlay: string;
+  glassDark: string;
+  gradientPrimary: readonly [string, string];
+  gradientHero: readonly [string, string, string];
+  shadow: string;
+  tabBarBg: string;
+};
+
 /** Default brand — deep purple */
-export const purpleColors = {
+export const purpleColors: ThemePalette = {
   ...shared,
   primary: '#2D0B59',
   primaryDark: '#1A0538',
@@ -30,14 +46,14 @@ export const purpleColors = {
   border: '#E8E0F0',
   overlay: 'rgba(45, 11, 89, 0.55)',
   glassDark: 'rgba(45, 11, 89, 0.35)',
-  gradientPrimary: ['#2D0B59', '#4B1E83'] as const,
-  gradientHero: ['#1A0538', '#2D0B59', '#4B1E83'] as const,
+  gradientPrimary: ['#2D0B59', '#4B1E83'],
+  gradientHero: ['#1A0538', '#2D0B59', '#4B1E83'],
   shadow: '#2D0B59',
   tabBarBg: 'rgba(45,11,89,0.92)',
 };
 
 /** Alternate brand — deep green (replaces purple when theme toggled) */
-export const greenColors = {
+export const greenColors: ThemePalette = {
   ...shared,
   primary: '#0B5C3E',
   primaryDark: '#063528',
@@ -48,13 +64,13 @@ export const greenColors = {
   border: '#D8E8E0',
   overlay: 'rgba(11, 92, 62, 0.55)',
   glassDark: 'rgba(11, 92, 62, 0.35)',
-  gradientPrimary: ['#0B5C3E', '#1A7A55'] as const,
-  gradientHero: ['#063528', '#0B5C3E', '#1A7A55'] as const,
+  gradientPrimary: ['#0B5C3E', '#1A7A55'],
+  gradientHero: ['#063528', '#0B5C3E', '#1A7A55'],
   shadow: '#0B5C3E',
   tabBarBg: 'rgba(11,92,62,0.92)',
 };
 
-export type AppColors = typeof purpleColors;
+export type AppColors = ThemePalette;
 
 /** Default export keeps purple for static StyleSheets */
 export const colors = purpleColors;
