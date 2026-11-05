@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   mineTime: {
-    color: 'rgba(255,255,255,0.65)',
+    color: 'rgba(255,255,255,0.82)',
   },
   typing: {
     fontFamily: fonts.medium,
@@ -238,6 +238,8 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 22,
     backgroundColor: colors.accent,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },

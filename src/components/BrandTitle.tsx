@@ -38,8 +38,8 @@ const SERIF_SIZE: Record<Size, number> = {
 };
 
 /** Champagne / light gold — matches Perfect Match headline */
-const GOLD = '#E8C96A';
-const GOLD_SOFT = '#F0D78C';
+const GOLD = '#EDC757';
+const GOLD_SOFT = '#F2D57A';
 
 /**
  * HUMSAFAR brand wordmark

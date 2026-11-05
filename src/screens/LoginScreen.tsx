@@ -360,9 +360,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: radius.lg,
     alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: 'transparent',
   },
   modeTabActive: {
     backgroundColor: colors.primary,
+    borderColor: colors.accent,
   },
   modeTabText: {
     fontFamily: fonts.medium,
@@ -427,7 +430,7 @@ const styles = StyleSheet.create({
     height: 46,
     borderRadius: radius.xl,
     borderWidth: 2,
-    borderColor: colors.primary,
+    borderColor: colors.accent,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

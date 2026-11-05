@@ -19,3 +19,4 @@ export * from './SocialIcons';
 export * from './RegisterStepLayout';
 export * from './MatchFrameCard';
 export * from './PhotoGalleryModal';
+export * from './HomePromoPopup';

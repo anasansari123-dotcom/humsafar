@@ -60,7 +60,7 @@ export const OnboardingScreen: React.FC<Props> = ({ navigation }) => {
     return (
       <View style={[styles.slide, { width }]}>
         <LinearGradient
-          colors={['rgba(212,175,55,0.2)', 'rgba(75,30,131,0.35)']}
+          colors={['rgba(214,169,40,0.2)', 'rgba(75,30,131,0.35)']}
           style={styles.illustration}
         >
           <View style={styles.iconCircle}>
@@ -167,13 +167,13 @@ const styles = StyleSheet.create({
     fontFamily: fonts.script,
     letterSpacing: 1,
     fontSize: 34,
-    color: '#E8C96A',
+    color: '#EDC757',
     textTransform: 'none',
   },
   description: {
     fontFamily: fonts.regular,
     fontSize: 15,
-    color: 'rgba(255,255,255,0.78)',
+    color: 'rgba(255,255,255,0.88)',
     textAlign: 'center',
     lineHeight: 24,
   },

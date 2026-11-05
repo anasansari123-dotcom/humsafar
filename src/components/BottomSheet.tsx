@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Modal,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -33,7 +34,15 @@ export const BottomSheet: React.FC<Props> = ({
       <View style={[styles.sheet, style]}>
         <View style={styles.handle} />
         {title ? <Text style={styles.title}>{title}</Text> : null}
-        {children}
+        {/* Long option lists (years, cities, codes) scroll inside the sheet */}
+        <ScrollView
+          style={styles.scroll}
+          showsVerticalScrollIndicator
+          keyboardShouldPersistTaps="handled"
+          nestedScrollEnabled
+        >
+          {children}
+        </ScrollView>
       </View>
     </View>
   </Modal>
@@ -61,6 +70,10 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: colors.border,
     marginBottom: spacing.lg,
+  },
+  scroll: {
+    flexGrow: 0,
+    flexShrink: 1,
   },
   title: {
     fontFamily: fonts.semiBold,

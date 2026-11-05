@@ -81,13 +81,12 @@ export const CASTE_OPTIONS = [
 
 /** Fixed tab content height (icons + labels); safe area added separately */
 export const TAB_BAR_CONTENT_HEIGHT = 64;
-/** Gap between the floating tab bar and the phone's nav bar */
-export const TAB_BAR_BOTTOM_LIFT = 10;
+/** Small gap between the tab bar and the bottom edge / phone nav bar */
+export const TAB_BAR_BOTTOM_GAP = 8;
 
-/** Floating tab bar's `bottom` offset, clearing Android 3-button / gesture nav */
+/** Tab bar's `bottom` offset: clears the home indicator / Android nav bar, plus a small gap */
 export const getTabBarBottom = (insetBottom: number) =>
-  Math.max(insetBottom, Platform.OS === 'android' ? 24 : 10) +
-  TAB_BAR_BOTTOM_LIFT;
+  Math.max(insetBottom, Platform.OS === 'android' ? 8 : 0) + TAB_BAR_BOTTOM_GAP;
 
 export const GENDER_OPTIONS = ['Male', 'Female'] as const;
 

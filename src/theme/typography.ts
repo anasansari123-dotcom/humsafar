@@ -17,7 +17,7 @@ export const fonts = {
 export const brandTitleStyle: TextStyle = {
   fontFamily: fonts.script,
   letterSpacing: 1,
-  color: '#E8C96A',
+  color: '#EDC757',
 };
 
 export const typography: Record<string, TextStyle> = {

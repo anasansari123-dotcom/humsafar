@@ -13,7 +13,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { colors, fonts, radius, shadows } from '../theme';
+import { colors, fonts, radius, shadows, useThemeColors } from '../theme';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -43,6 +43,7 @@ export const PremiumButton: React.FC<Props> = ({
   icon,
   compact,
 }) => {
+  const theme = useThemeColors();
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -91,7 +92,13 @@ export const PremiumButton: React.FC<Props> = ({
           colors={[...colors.gradientGold]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={[styles.base, compact && styles.compact, shadows.gold]}
+          style={[
+            styles.base,
+            styles.goldBorder,
+            { borderColor: theme.primary },
+            compact && styles.compact,
+            shadows.gold,
+          ]}
         >
           {content}
         </LinearGradient>
@@ -100,7 +107,12 @@ export const PremiumButton: React.FC<Props> = ({
           colors={[...colors.gradientPrimary]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={[styles.base, compact && styles.compact, shadows.medium]}
+          style={[
+            styles.base,
+            styles.primaryBorder,
+            compact && styles.compact,
+            shadows.medium,
+          ]}
         >
           {content}
         </LinearGradient>
@@ -156,7 +168,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   ghost: {
+    borderWidth: 1,
+    borderColor: 'rgba(214,169,40,0.55)',
     backgroundColor: 'transparent',
+  },
+  /** Gold buttons get a brand-colour rim (purple, or green in green theme) */
+  goldBorder: {
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+  },
+  primaryBorder: {
+    borderWidth: 1.5,
+    borderColor: colors.accent,
   },
   disabled: {
     opacity: 0.55,

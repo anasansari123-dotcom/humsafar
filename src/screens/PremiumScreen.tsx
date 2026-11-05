@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Crown } from 'lucide-react-native';
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import {
@@ -16,7 +16,6 @@ import {
   PremiumButton,
   PremiumOfferPopup,
 } from '../components';
-import { TAB_BAR_CONTENT_HEIGHT, getTabBarBottom } from '../constants';
 import { formatCurrency } from '../utils';
 import { membershipPlans } from '../data/membership';
 import { useAppStore } from '../store/useAppStore';
@@ -29,6 +28,7 @@ const PREMIUM_TIERS: MembershipTier[] = ['SILVER', 'GOLD', 'PLATINUM'];
 /** Bottom-tab Premium — Silver / Gold / Platinum with themed glow */
 export const PremiumScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
   const [selected, setSelected] = useState<MembershipTier | null>(null);
   const membership = useAppStore((s) => s.membership);
   const setMembership = useAppStore((s) => s.setMembership);
@@ -54,8 +54,13 @@ export const PremiumScreen: React.FC = () => {
 
   const selectedPlan = plans.find((p) => p.id === selected);
 
-  // Top edge of the floating tab bar (same sizing as MainTabs)
-  const tabBarTop = getTabBarBottom(insets.bottom) + TAB_BAR_CONTENT_HEIGHT;
+  // Tab bar is hidden here, so only the phone's own bottom inset matters
+  const bottomSpace = insets.bottom;
+
+  const goBack = () => {
+    if (navigation.canGoBack()) navigation.goBack();
+    else navigation.navigate('Home' as never);
+  };
 
   const onPay = () => {
     if (!selectedPlan) return;
@@ -74,6 +79,7 @@ export const PremiumScreen: React.FC = () => {
       <GradientHeader
         title="Premium Plans"
         subtitle={`Current plan: ${membership}`}
+        onBack={goBack}
         tall
       >
         <View style={styles.crownBadge}>
@@ -85,7 +91,7 @@ export const PremiumScreen: React.FC = () => {
       <ScrollView
         contentContainerStyle={[
           styles.content,
-          { paddingBottom: tabBarTop + (selectedPlan ? 96 : 24) },
+          { paddingBottom: bottomSpace + (selectedPlan ? 96 : 24) },
         ]}
         showsVerticalScrollIndicator={false}
       >
@@ -107,7 +113,7 @@ export const PremiumScreen: React.FC = () => {
           key={selectedPlan.id}
           entering={FadeInDown.duration(220)}
           exiting={FadeOutDown.duration(180)}
-          style={[styles.payBar, { bottom: tabBarTop + 12 }]}
+          style={[styles.payBar, { bottom: bottomSpace + 12 }]}
         >
           <PremiumButton
             title={`Pay ${formatCurrency(selectedPlan.price)} · ${

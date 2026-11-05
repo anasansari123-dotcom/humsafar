@@ -92,7 +92,9 @@ export const RegisterNameScreen: React.FC<Props> = ({ navigation }) => {
                 style={[styles.radio, active && styles.radioActive]}
                 onPress={() => setSelectedGender(g)}
               >
-                <View style={[styles.radioDot, active && styles.radioDotOn]} />
+                <View style={[styles.radioDot, active && styles.radioDotOn]}>
+                  {active ? <View style={styles.radioDotInner} /> : null}
+                </View>
                 <Text
                   style={[styles.radioText, active && styles.radioTextActive]}
                 >
@@ -183,23 +185,32 @@ const styles = StyleSheet.create({
     minHeight: 54,
     borderRadius: radius.xl,
     borderWidth: 2,
-    borderColor: colors.border,
+    borderColor: colors.borderGold,
     paddingHorizontal: 14,
     backgroundColor: colors.surface,
   },
   radioActive: {
     borderColor: colors.accent,
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    backgroundColor: 'rgba(214,169,40,0.08)',
   },
+  /** Classic radio: gold ring, purple centre dot when selected */
   radioDot: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     borderWidth: 2,
-    borderColor: colors.accent,
+    borderColor: colors.borderGold,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   radioDotOn: {
     borderColor: colors.accent,
+  },
+  radioDotInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
     backgroundColor: colors.primary,
   },
   radioText: {

@@ -7,6 +7,8 @@ interface AppState {
   membership: MembershipTier;
   viewedProfileIds: string[];
   favouriteIds: string[];
+  /** Profiles whose contact details the user has opened */
+  contactedIds: string[];
   showPremiumPopup: boolean;
   showProfileCreatedPopup: boolean;
   filters: SearchFilters;
@@ -15,6 +17,7 @@ interface AppState {
   setMembership: (tier: MembershipTier) => void;
   addViewedProfile: (id: string) => void;
   toggleFavourite: (id: string) => void;
+  addContacted: (id: string) => void;
   setShowPremiumPopup: (show: boolean) => void;
   setShowProfileCreatedPopup: (show: boolean) => void;
   setFilters: (filters: Partial<SearchFilters>) => void;
@@ -43,6 +46,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   membership: 'FREE',
   viewedProfileIds: [],
   favouriteIds: ['p1', 'p3', 'p7'],
+  contactedIds: ['p6'],
   showPremiumPopup: false,
   showProfileCreatedPopup: false,
   filters: defaultFilters,
@@ -62,6 +66,12 @@ export const useAppStore = create<AppState>((set, get) => ({
         ? current.filter((f) => f !== id)
         : [...current, id],
     });
+  },
+  addContacted: (id) => {
+    const current = get().contactedIds;
+    if (!current.includes(id)) {
+      set({ contactedIds: [id, ...current] });
+    }
   },
   setShowPremiumPopup: (showPremiumPopup) => set({ showPremiumPopup }),
   setShowProfileCreatedPopup: (showProfileCreatedPopup) =>

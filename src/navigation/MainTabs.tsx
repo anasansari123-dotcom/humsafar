@@ -38,7 +38,7 @@ const TabIcon = ({
   <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
     <Icon
       size={22}
-      color={focused ? accent : 'rgba(255,255,255,0.55)'}
+      color={focused ? accent : 'rgba(255,255,255,0.72)'}
       strokeWidth={focused ? 2.2 : 1.8}
     />
   </View>
@@ -62,6 +62,7 @@ export const MainTabs = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        // Rounded bar sitting a little above the bottom edge
         tabBarStyle: [
           styles.tabBar,
           {
@@ -85,7 +86,7 @@ export const MainTabs = () => {
           </View>
         ),
         tabBarActiveTintColor: colors.accent,
-        tabBarInactiveTintColor: 'rgba(255,255,255,0.55)',
+        tabBarInactiveTintColor: 'rgba(255,255,255,0.72)',
         tabBarLabelStyle: styles.label,
         tabBarItemStyle: styles.tabItem,
       }}
@@ -130,6 +131,8 @@ export const MainTabs = () => {
         component={PremiumScreen}
         options={{
           tabBarLabel: 'Premium',
+          // Full-screen plans page — no tab bar; header has a back button
+          tabBarStyle: { display: 'none' },
           tabBarIcon: ({ focused }) => (
             <TabIcon Icon={Crown} focused={focused} accent={colors.accent} />
           ),
@@ -142,15 +145,16 @@ export const MainTabs = () => {
 const styles = StyleSheet.create({
   tabBar: {
     position: 'absolute',
-    left: 16,
-    right: 16,
+    left: 12,
+    right: 12,
     borderRadius: 24,
     borderTopWidth: 0,
+    overflow: 'hidden',
     backgroundColor: 'transparent',
     elevation: 12,
     zIndex: 100,
-    paddingBottom: 6,
     paddingTop: 6,
+    paddingBottom: 6,
   },
   tabBg: {
     position: 'absolute',

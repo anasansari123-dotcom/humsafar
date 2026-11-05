@@ -215,6 +215,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.12)',
+    borderWidth: 1.5,
+    borderColor: colors.accent,
   },
   langBtn: {
     flexDirection: 'row',
@@ -250,7 +252,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.script,
     fontSize: 48,
     lineHeight: 64,
-    color: '#E8C96A',
+    color: '#EDC757',
     textAlign: 'center',
     textShadowColor: 'rgba(0,0,0,0.45)',
     textShadowOffset: { width: 0, height: 2 },
@@ -330,7 +332,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   langItemActive: {
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    backgroundColor: 'rgba(214,169,40,0.08)',
     borderRadius: radius.lg,
     paddingHorizontal: 12,
     borderBottomWidth: 0,

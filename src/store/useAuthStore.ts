@@ -6,7 +6,7 @@ interface AuthState {
   hasSeenMembership: boolean;
   /** Premium offer popup shown once per login session */
   hasSeenPremiumOffer: boolean;
-  /** Offer popup queued right after a successful login */
+  /** Home promo popup — queued on login and whenever the app is reopened */
   showLoginOffer: boolean;
   phone: string;
   countryCode: string;

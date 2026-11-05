@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   tagline: {
     fontFamily: fonts.medium,
     fontSize: 14,
-    color: 'rgba(255,255,255,0.78)',
+    color: 'rgba(255,255,255,0.88)',
     textAlign: 'center',
     marginTop: 10,
     letterSpacing: 0.4,

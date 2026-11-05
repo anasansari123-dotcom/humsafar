@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1.5,
     borderColor: colors.accent,
-    backgroundColor: 'rgba(212,175,55,0.14)',
+    backgroundColor: 'rgba(214,169,40,0.14)',
     alignItems: 'center',
     justifyContent: 'center',
   },

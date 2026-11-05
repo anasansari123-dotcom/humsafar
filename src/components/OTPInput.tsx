@@ -84,6 +84,6 @@ const styles = StyleSheet.create({
   },
   filled: {
     borderColor: colors.accent,
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    backgroundColor: 'rgba(214,169,40,0.08)',
   },
 });

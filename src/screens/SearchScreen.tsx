@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Alert,
   LayoutChangeEvent,
   PanResponder,
   Pressable,
@@ -14,6 +15,7 @@ import {
   CustomTextInput,
   GradientHeader,
   MATCH_FRAME_RATIO,
+  MATCH_FRAME_UNDER_BAR,
   MatchFrameCard,
   PhotoGalleryModal,
   PremiumButton,
@@ -27,6 +29,8 @@ import {
   MARITAL_STATUS_OPTIONS,
   PROFESSION_OPTIONS,
   SECT_OPTIONS,
+  TAB_BAR_CONTENT_HEIGHT,
+  getTabBarBottom,
 } from '../constants';
 import { canViewProfile } from '../utils';
 import { colors, fonts, radius, spacing, useThemeColors } from '../theme';
@@ -61,6 +65,8 @@ export const SearchScreen: React.FC = () => {
     viewedProfileIds,
     addViewedProfile,
     setShowPremiumPopup,
+    favouriteIds,
+    toggleFavourite,
   } = useAppStore();
   const [showFilters, setShowFilters] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
@@ -104,11 +110,26 @@ export const SearchScreen: React.FC = () => {
   const current = results[index];
   const isFree = membership === 'FREE';
 
-  /** Height fills screen; width slightly under aspect so sides have a slim gap */
-  const cardWidth = useMemo(() => {
-    if (!stage.height) return 0;
-    return stage.height * MATCH_FRAME_RATIO * 0.80;
-  }, [stage.height]);
+  /** Distance from the screen bottom to the tab bar's top edge */
+  const tabBarTop = getTabBarBottom(insets.bottom) + TAB_BAR_CONTENT_HEIGHT;
+
+  /**
+   * Card runs from the status bar down behind the tab bar: the frame's gold
+   * lattice border sits under the bar, the Decline / Connect row stays just
+   * above it. Tall, narrow screens stretch the frame vertically (capped).
+   */
+  const cardSize = useMemo(() => {
+    if (!stage.height || !stage.width) return { width: 0, height: 0 };
+    const width = stage.width - spacing.sm * 2;
+    const fitted =
+      (stage.height - tabBarTop - spacing.xs) / (1 - MATCH_FRAME_UNDER_BAR);
+    const height = Math.min(
+      fitted,
+      stage.height - insets.bottom,
+      (width / MATCH_FRAME_RATIO) * 1.5,
+    );
+    return { width, height };
+  }, [stage.height, stage.width, tabBarTop, insets.bottom]);
 
   const onStageLayout = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
@@ -142,6 +163,15 @@ export const SearchScreen: React.FC = () => {
       },
     }),
   ).current;
+
+  const onConnect = () => {
+    if (!current) return;
+    Alert.alert(
+      'Interest Sent',
+      `Your interest has been sent to ${current.name}. We'll notify you when they respond.`,
+    );
+    goNext();
+  };
 
   const openPhotos = (id: string) => {
     const alreadyViewed = viewedProfileIds.includes(id);
@@ -336,24 +366,37 @@ export const SearchScreen: React.FC = () => {
         </>
       ) : (
         <View
-          style={[styles.matchBody, { backgroundColor: theme.primaryDark }]}
-          onLayout={onStageLayout}
+          style={[
+            styles.matchBody,
+            {
+              backgroundColor: theme.primaryDark,
+              paddingTop: insets.top + spacing.xs,
+            },
+          ]}
           {...panResponder.panHandlers}
         >
-          {current && cardWidth > 0 ? (
-            <MatchFrameCard
-              key={current.id}
-              profile={current}
-              width={cardWidth}
-              height={stage.height}
-              contactLocked={isFree}
-              onPressPhoto={() => openPhotos(current.id)}
-            />
-          ) : (
-            <Text style={[styles.empty, styles.emptyOnDark]}>
-              No profiles match your filters.
-            </Text>
-          )}
+          <View style={styles.stage} onLayout={onStageLayout}>
+            {current && cardSize.width > 0 ? (
+              <MatchFrameCard
+                key={current.id}
+                profile={current}
+                width={cardSize.width}
+                height={cardSize.height}
+                contactLocked={isFree}
+                isShortlisted={favouriteIds.includes(current.id)}
+                onPressPhoto={() => openPhotos(current.id)}
+                onToggleShortlist={() => toggleFavourite(current.id)}
+                onPrev={goPrev}
+                onNext={goNext}
+                onDecline={goNext}
+                onConnect={onConnect}
+              />
+            ) : !current ? (
+              <Text style={[styles.empty, styles.emptyOnDark]}>
+                No profiles match your filters.
+              </Text>
+            ) : null}
+          </View>
 
           {current ? (
             <PhotoGalleryModal
@@ -377,7 +420,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: 'rgba(214,169,40,0.12)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
@@ -388,9 +431,13 @@ const styles = StyleSheet.create({
   },
   matchBody: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     overflow: 'hidden',
+  },
+  /** Full height to the screen bottom; the card hangs from the top */
+  stage: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   section: {
     fontFamily: fonts.semiBold,
@@ -415,7 +462,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
     backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderGold,
   },
   chipActive: {
     backgroundColor: colors.primary,
@@ -441,6 +488,6 @@ const styles = StyleSheet.create({
     marginTop: spacing.xxxl,
   },
   emptyOnDark: {
-    color: 'rgba(255,255,255,0.75)',
+    color: 'rgba(255,255,255,0.88)',
   },
 });

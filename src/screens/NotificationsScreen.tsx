@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   unread: {
-    backgroundColor: 'rgba(212,175,55,0.06)',
+    backgroundColor: 'rgba(214,169,40,0.06)',
   },
   iconWrap: {
     width: 42,

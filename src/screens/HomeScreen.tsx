@@ -128,6 +128,14 @@ export const HomeScreen: React.FC = () => {
           </View>
 
           <View style={styles.rightActions}>
+            <Pressable
+              style={styles.iconBtn}
+              onPress={() => navigation.navigate('Notifications')}
+              accessibilityLabel="Notifications"
+            >
+              <Bell size={18} color={colors.accent} />
+              <View style={styles.dot} />
+            </Pressable>
             <Switch
               value={darkMode}
               onValueChange={toggleDarkMode}
@@ -140,14 +148,6 @@ export const HomeScreen: React.FC = () => {
                 darkMode ? 'Switch to purple theme' : 'Switch to green theme'
               }
             />
-            <Pressable
-              style={styles.iconBtn}
-              onPress={() => navigation.navigate('Notifications')}
-              accessibilityLabel="Notifications"
-            >
-              <Bell size={18} color={colors.accent} />
-              <View style={styles.dot} />
-            </Pressable>
           </View>
         </View>
         <SearchInput
@@ -163,7 +163,8 @@ export const HomeScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: insets.bottom + 130,
-          paddingTop: spacing.md,
+          // Breathing room between the curved header and the first section
+          paddingTop: spacing.xxl,
         }}
       >
         <SectionHeader
@@ -269,6 +270,9 @@ export const HomeScreen: React.FC = () => {
   );
 };
 
+/** Height of the menu / avatar / bell row (avatar size) */
+const HEADER_ROW = 46;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -287,7 +291,8 @@ const styles = StyleSheet.create({
   headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // Top-aligned so the bell lines up with the menu/avatar, not the column centre
+    alignItems: 'flex-start',
     gap: 12,
     paddingLeft: spacing.sm,
     paddingRight: spacing.lg,
@@ -295,6 +300,7 @@ const styles = StyleSheet.create({
   },
   leftHeader: {
     flex: 1,
+    height: HEADER_ROW,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
@@ -304,7 +310,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 12,
-    backgroundColor: 'rgba(212,175,55,0.14)',
+    backgroundColor: 'rgba(214,169,40,0.14)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
@@ -325,7 +331,7 @@ const styles = StyleSheet.create({
   greeting: {
     fontFamily: fonts.regular,
     fontSize: 11,
-    color: 'rgba(255,255,255,0.7)',
+    color: 'rgba(255,255,255,0.85)',
   },
   userName: {
     fontFamily: fonts.semiBold,
@@ -333,16 +339,18 @@ const styles = StyleSheet.create({
     color: colors.surface,
   },
   /** Toggle + bell in one row, vertically centred with the avatar */
+  /** Notification bell with the theme toggle stacked beneath it */
   rightActions: {
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 2,
+    // Centre the 42px bell on the 46px avatar row
+    paddingTop: (HEADER_ROW - 42) / 2,
   },
   iconBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: 'rgba(214,169,40,0.12)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
@@ -361,7 +369,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent,
   },
   search: {
-    marginTop: spacing.xl + 6,
+    // Header is taller now that the theme toggle sits under the bell
+    marginTop: spacing.md,
     marginHorizontal: spacing.lg,
   },
   grid: {

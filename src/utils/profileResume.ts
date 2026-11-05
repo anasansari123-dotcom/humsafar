@@ -25,7 +25,7 @@ export const buildProfileResumeHtml = (profile: Profile, membership: string) => 
       background: #fff;
     }
     .header {
-      border-bottom: 3px solid #D4AF37;
+      border-bottom: 3px solid #D6A928;
       padding-bottom: 18px;
       margin-bottom: 24px;
     }
@@ -52,7 +52,7 @@ export const buildProfileResumeHtml = (profile: Profile, membership: string) => 
       margin-top: 10px;
       padding: 4px 10px;
       border-radius: 999px;
-      background: #D4AF37;
+      background: #D6A928;
       color: #2D0B59;
       font-size: 11px;
       font-weight: 700;
@@ -61,7 +61,7 @@ export const buildProfileResumeHtml = (profile: Profile, membership: string) => 
     h2 {
       margin: 22px 0 8px;
       font-size: 15px;
-      color: #D4AF37;
+      color: #D6A928;
       letter-spacing: 1px;
       text-transform: uppercase;
       border-bottom: 1px solid #E8E0F0;

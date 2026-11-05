@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { AppState } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthNavigator } from './AuthNavigator';
@@ -20,30 +21,36 @@ import {
 import { useAuthStore } from '../store/useAuthStore';
 import { getThemeColors } from '../theme';
 import {
-  PremiumOfferPopup,
+  HomePromoPopup,
   PremiumPopup,
   ProfileCreatedPopup,
 } from '../components';
-import { membershipPlans } from '../data/membership';
 import { useAppStore } from '../store/useAppStore';
 import { useNavigationContainerRef } from '@react-navigation/native';
 import { useProfileStore } from '../store/useProfileStore';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const OFFER_PLANS = membershipPlans.filter((p) => p.id !== 'FREE');
-
 export const RootNavigator = () => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const showLoginOffer = useAuthStore((s) => s.showLoginOffer);
   const setShowLoginOffer = useAuthStore((s) => s.setShowLoginOffer);
-  const setHasSeenPremiumOffer = useAuthStore((s) => s.setHasSeenPremiumOffer);
+  const appState = useRef(AppState.currentState);
 
-  // Offer already seen this session → don't repeat it on the Premium tab
-  const dismissLoginOffer = () => {
-    setShowLoginOffer(false);
-    setHasSeenPremiumOffer(true);
-  };
+  // Show the home promo again whenever the app comes back from the background
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (next) => {
+      if (
+        appState.current === 'background' &&
+        next === 'active' &&
+        useAuthStore.getState().isAuthenticated
+      ) {
+        setShowLoginOffer(true);
+      }
+      appState.current = next;
+    });
+    return () => sub.remove();
+  }, [setShowLoginOffer]);
   const showPremiumPopup = useAppStore((s) => s.showPremiumPopup);
   const setShowPremiumPopup = useAppStore((s) => s.setShowPremiumPopup);
   const showProfileCreatedPopup = useAppStore((s) => s.showProfileCreatedPopup);
@@ -113,13 +120,12 @@ export const RootNavigator = () => {
         }}
       />
 
-      {/* After login; waits until the account-created popup is dismissed */}
-      <PremiumOfferPopup
+      {/* After login and on every reopen; waits for the account-created popup */}
+      <HomePromoPopup
         visible={showLoginOffer && showMain && !showProfileCreatedPopup}
-        plans={OFFER_PLANS}
-        onClose={dismissLoginOffer}
-        onGrab={() => {
-          dismissLoginOffer();
+        onClose={() => setShowLoginOffer(false)}
+        onCta={() => {
+          setShowLoginOffer(false);
           navigationRef.navigate('Main', { screen: 'Premium' });
         }}
       />

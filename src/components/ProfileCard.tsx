@@ -117,6 +117,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     overflow: 'hidden',
     backgroundColor: colors.primary,
+    borderWidth: 1.5,
+    borderColor: colors.accent,
   },
   regular: {
     width: 180,
@@ -148,6 +150,8 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 17,
     backgroundColor: 'rgba(255,255,255,0.2)',
+    borderWidth: 1,
+    borderColor: colors.accent,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -172,7 +176,7 @@ const styles = StyleSheet.create({
   meta: {
     fontFamily: fonts.regular,
     fontSize: 12,
-    color: 'rgba(255,255,255,0.8)',
+    color: 'rgba(255,255,255,0.9)',
     marginTop: 2,
   },
   location: {

@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
     backgroundColor: colors.surface,
     borderWidth: 1.5,
-    borderColor: colors.border,
+    borderColor: colors.borderGold,
     marginRight: 8,
     height: 40,
     justifyContent: 'center',

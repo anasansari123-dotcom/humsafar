@@ -48,7 +48,7 @@ export const GradientHeader: React.FC<Props> = ({
               styles.back,
               {
                 borderColor: colors.accent,
-                backgroundColor: 'rgba(212,175,55,0.12)',
+                backgroundColor: 'rgba(214,169,40,0.12)',
               },
             ]}
             hitSlop={10}
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontFamily: fonts.regular,
     fontSize: 12,
-    color: 'rgba(255,255,255,0.7)',
+    color: 'rgba(255,255,255,0.85)',
     textAlign: 'center',
     marginTop: 2,
   },

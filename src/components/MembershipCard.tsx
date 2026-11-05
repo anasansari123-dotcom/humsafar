@@ -20,7 +20,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type PlanId = Exclude<MembershipTier, 'FREE'>;
 
-const GOLD_DOT = '#D4AF37';
+const GOLD_DOT = '#D6A928';
 /** Brand purple — fill for every radio / check circle */
 const PURPLE = '#2D0B59';
 
@@ -51,10 +51,10 @@ const PLAN_THEME: Record<
     ],
   },
   GOLD: {
-    gradient: ['#4B1E83', '#2D0B59', '#1A0538', '#3A1568'],
+    gradient: ['#5B2A9E', '#2D0B59', '#12022A', '#43197A'],
     border: GOLD_DOT,
     glow: GOLD_DOT,
-    accent: '#E8C96A',
+    accent: '#EDC757',
     dot: GOLD_DOT,
     shimmer: [
       'transparent',
@@ -64,10 +64,10 @@ const PLAN_THEME: Record<
     lightText: true,
   },
   PLATINUM: {
-    gradient: ['#063528', '#0B5C3E', '#1A7A55', '#0B5C3E'],
+    gradient: ['#022519', '#0B5C3E', '#15895D', '#0B5C3E'],
     border: GOLD_DOT,
     glow: GOLD_DOT,
-    accent: '#E8C96A',
+    accent: '#EDC757',
     dot: GOLD_DOT,
     shimmer: [
       'transparent',
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   taglineLight: {
-    color: 'rgba(255,255,255,0.72)',
+    color: 'rgba(255,255,255,0.85)',
   },
   priceRow: {
     flexDirection: 'row',

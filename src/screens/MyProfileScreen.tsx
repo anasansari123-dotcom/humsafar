@@ -59,7 +59,7 @@ const MenuItem = ({
       <View
         style={[
           styles.menuIcon,
-          { borderColor: accent, backgroundColor: 'rgba(212,175,55,0.12)' },
+          { borderColor: accent, backgroundColor: 'rgba(214,169,40,0.12)' },
         ]}
       >
         <Icon size={18} color={accent} />
@@ -120,7 +120,7 @@ export const MyProfileScreen: React.FC = () => {
         colors={[...theme.gradientHero]}
         style={[styles.header, { paddingTop: insets.top + 12 }]}
       >
-        <View style={styles.topBar}>
+        <View style={[styles.topBar, { top: insets.top + 12 }]}>
           {navigation.canGoBack() ? (
             <Pressable
               style={styles.iconBtn}
@@ -151,8 +151,8 @@ export const MyProfileScreen: React.FC = () => {
 
         <View style={styles.avatarWrap}>
           <Image source={{ uri: myProfile.images[0] }} style={styles.avatar} />
-          <Pressable style={styles.camera}>
-            <Camera size={16} color={theme.primary} />
+          <Pressable style={[styles.camera, { borderColor: theme.primary }]}>
+            <Camera size={15} color={theme.primary} />
           </Pressable>
         </View>
         <Text style={styles.name}>{myProfile.name}</Text>
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    paddingBottom: spacing.xxxl,
+    paddingBottom: spacing.xl,
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
     paddingHorizontal: spacing.xl,
@@ -351,18 +351,21 @@ const styles = StyleSheet.create({
     borderColor: colors.accent,
     borderBottomColor: colors.accentLight,
   },
+  /** Back / theme buttons float either side of the avatar to save height */
   topBar: {
-    width: '100%',
+    position: 'absolute',
+    left: spacing.xl,
+    right: spacing.xl,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.md,
+    zIndex: 2,
   },
   iconBtn: {
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: 'rgba(214,169,40,0.12)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
@@ -373,51 +376,53 @@ const styles = StyleSheet.create({
     height: 42,
   },
   avatarWrap: {
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
   },
   avatar: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
+    width: 88,
+    height: 88,
+    borderRadius: 44,
     borderWidth: 3,
     borderColor: colors.accent,
   },
   camera: {
     position: 'absolute',
-    right: 4,
-    bottom: 4,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    right: 0,
+    bottom: 0,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: colors.accent,
+    borderWidth: 2,
+    borderColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   name: {
     fontFamily: fonts.bold,
-    fontSize: 24,
+    fontSize: 22,
     color: colors.surface,
   },
   accountId: {
     fontFamily: fonts.semiBold,
     fontSize: 14,
     color: colors.accent,
-    marginTop: 4,
+    marginTop: 2,
     letterSpacing: 0.4,
   },
   meta: {
     fontFamily: fonts.regular,
     fontSize: 13,
-    color: 'rgba(255,255,255,0.75)',
-    marginTop: 4,
+    color: 'rgba(255,255,255,0.88)',
+    marginTop: 2,
   },
   badges: {
     flexDirection: 'row',
     gap: 8,
-    marginTop: 12,
+    marginTop: 8,
   },
   completionBox: {
-    marginTop: spacing.xl,
+    marginTop: spacing.md,
     width: '85%',
   },
   completionText: {
@@ -519,7 +524,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   langItemActive: {
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    backgroundColor: 'rgba(214,169,40,0.08)',
     borderRadius: radius.lg,
     paddingHorizontal: 12,
     borderBottomWidth: 0,
